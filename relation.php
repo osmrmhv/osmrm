@@ -155,6 +155,7 @@
 	</ul></dd>
 </dl>
 <h2><?=htmlspecialchars(_("Segments"))?></h2>
+<p><?=htmlspecialchars(_("Get GPS coordinates by clicking on the map."))?></p>
 <div id="segment-list">
 	<table>
 		<thead>
