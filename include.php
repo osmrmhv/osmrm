@@ -20,6 +20,49 @@
 	set_time_limit(300);
 
 	header("Content-type: text/html; charset=UTF-8");
+
+	bindtextdomain("osmrm", dirname(__FILE__)."/locale");
+	bind_textdomain_codeset("osmrm", "utf-8");
+	textdomain("osmrm");
+
+	$languages = array (
+		"de_DE" => array("de_DE.utf8", "de_DE@utf8", "de_DE", "de", "german", "ger", "deutsch", "deu"),
+		"en_GB" => array("en_GB.utf8", "en_GB@utf8", "en_US.utf8", "en_US@utf8", "en", "english", "eng")
+	);
+	if(isset($_GET["lang"]) && isset($languages[$_GET["lang"]]))
+	{
+		setcookie("lang", $_GET["lang"], time()+86400*365*2, dirname($_SERVER["PHP_SELF"])."/");
+		$_COOKIE["lang"] = $_GET["lang"];
+	}
+	$lang = null;
+	if(isset($_COOKIE["lang"]) && isset($languages[$_COOKIE["lang"]]))
+		$lang = $_COOKIE["lang"];
+	elseif(isset($_SERVER["HTTP_ACCEPT_LANGUAGE"]))
+	{
+		$accept_language = strtolower($_SERVER["HTTP_ACCEPT_LANGUAGE"]);
+		$min = null;
+		foreach(array("en" => "en_GB", "de" => "de_DE") as $k=>$v)
+		{
+			$strpos = strpos($accept_language, $k);
+			if($strpos !== false)
+			{
+				if(is_null($min) || $strpos < $min[0])
+					$min = array($strpos, $v);
+			}
+		}
+		if(!is_null($min))
+			$lang = $min[1];
+	}
+	if(is_null($lang))
+		$lang = "en_GB";
+
+	$locale = setlocale(LC_MESSAGES, $languages[$lang]);
+	putenv("LANGUAGE=".$lang);
+	putenv("LANG=".$lang);
+	putenv("LC_MESSAGES=".$locale);
+	$_ENV["LANGUAGE"] = $_ENV["LANG"] = $lang;
+	$_ENV["LC_MESSAGES"] = $locale;
+
 	$GUI = new GUI();
 
 	function __autoload($classname)

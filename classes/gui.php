@@ -47,6 +47,24 @@
 	<body>
 		<h1><?=htmlspecialchars($title)?></h1>
 <?php
+			$languages = array("en_GB" => "English", "de_DE" => "Deutsch");
+			$url_prefix = "?";
+			if(strlen($_SERVER["QUERY_STRING"]) > 0)
+				$url_prefix .= $_SERVER["QUERY_STRING"]."&";
+?>
+		<ul id="switch-lang">
+<?php
+			foreach($languages as $lang=>$name)
+			{
+				if(isset($_ENV["LANG"]) && $_ENV["LANG"] == $lang)
+					continue;
+?>
+			<li><a href="<?=htmlspecialchars($url_prefix."lang=".urlencode($lang))?>"><?=htmlspecialchars($name)?></a></li>
+<?php
+			}
+?>
+		</ul>
+<?php
 		}
 
 		function foot()
