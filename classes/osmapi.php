@@ -29,7 +29,7 @@
 		 * @return OSMObject[]
 		*/
 
-		static public function get($url, $api_server=self::API_SERVER, $api_port=self:API_PORT, $api_prefix=self::API_PREFIX)
+		static public function get($url, $api_server=self::API_SERVER, $api_port=self::API_PORT, $api_prefix=self::API_PREFIX)
 		{
 			$fh = fsockopen($api_server, $api_port);
 			if(!$fh)
