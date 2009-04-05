@@ -157,12 +157,14 @@
 <div id="segment-list">
 	<table>
 		<thead>
-			<th><?=htmlspecialchars(_("Segment #"))?></th>
-			<th><?=htmlspecialchars(_("Length"))?></th>
-			<th><?=htmlspecialchars(_("Distance to next segments"))?></th>
-			<th><?=htmlspecialchars(_("Visible"))?></th>
-			<th><?=htmlspecialchars(_("Zoom"))?></th>
-			<th><?=htmlspecialchars(_("Add to personal route"))?></th>
+			<tr>
+				<th><?=htmlspecialchars(_("Segment #"))?></th>
+				<th><?=htmlspecialchars(_("Length"))?></th>
+				<th><?=htmlspecialchars(_("Distance to next segments"))?></th>
+				<th><?=htmlspecialchars(_("Visible"))?></th>
+				<th><?=htmlspecialchars(_("Zoom"))?></th>
+				<th><?=htmlspecialchars(_("Add to personal route"))?></th>
+			</tr>
 		</thead>
 		<tbody>
 <?php

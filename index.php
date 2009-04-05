@@ -94,7 +94,7 @@
 		</dl>
 		<input type="submit" value="<?=htmlspecialchars(_("Search using OSM API"))?>" />
 		<input type="submit" name="xapi" value="<?=htmlspecialchars(_("Search using XAPI"))?>" />
-		<p><?=htmlspecialchars(_("OSM API will probably be more current but won’t let you search for wild-cards or something else than a name."))?></p>
+		<p><?=htmlspecialchars(_("OSM API will probably be more current and a lot faster but won’t let you search for wild-cards or something else than a name."))?></p>
 	</fieldset>
 </form>
 <?php
