@@ -19,6 +19,7 @@
 	require_once(dirname(__FILE__)."/osmnode.php");
 	require_once(dirname(__FILE__)."/osmway.php");
 	require_once(dirname(__FILE__)."/osmrelation.php");
+	require_once(dirname(__FILE__)."/osmapi.php");
 
 	class OSMObject
 	{

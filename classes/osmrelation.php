@@ -17,6 +17,7 @@
 */
 
 	require_once(dirname(__FILE__)."/osmobject.php");
+	require_once(dirname(__FILE__)."/sqlite.php");
 
 	class OSMRelation extends OSMObject
 	{

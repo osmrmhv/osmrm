@@ -29,14 +29,14 @@
 		 * @return OSMObject[]
 		*/
 
-		static public function get($url)
+		static public function get($url, $api_server=self::API_SERVER, $api_port=self:API_PORT, $api_prefix=self::API_PREFIX)
 		{
-			$fh = fsockopen(static::API_SERVER, static::API_PORT);
+			$fh = fsockopen($api_server, $api_port);
 			if(!$fh)
 				throw new IOException(_("Could not connect to the API server."));
 			//echo "GET ".static::API_PREFIX.$url."<br />\n";
-			fwrite($fh, "GET ".static::API_PREFIX.$url." HTTP/1.0\r\n");
-			fwrite($fh, "Host: ".static::API_SERVER."\r\n");
+			fwrite($fh, "GET ".$api_prefix.$url." HTTP/1.0\r\n");
+			fwrite($fh, "Host: ".$api_server."\r\n");
 			fwrite($fh, "Connection: close\r\n");
 			fwrite($fh, "\r\n");
 

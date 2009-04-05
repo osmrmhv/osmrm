@@ -16,8 +16,15 @@
     along with OSM Route Manager.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	require_once(dirname(__FILE__)."/osmapi.php");
+
 	class OSMXAPI extends OSMAPI
 	{
 		const API_SERVER = "xapi.openstreetmap.org";
+
+		static public function get($url)
+		{
+			return parent::get($url);
+		}
 	}
 ?>
