@@ -110,6 +110,7 @@
 <?php
 	}
 ?>
+</dl>
 <h2><?=htmlspecialchars(_("Details"))?></h2>
 <dl>
 	<dt><?=htmlspecialchars(_("Last changed"))?></dt>
