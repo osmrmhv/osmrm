@@ -106,7 +106,7 @@
 		$tag = $tags->item($i);
 ?>
 	<dt><?=htmlspecialchars($tag->getAttribute("k"))?></dt>
-	<dd><?=htmlspecialchars($tag->getAttribute("v"))?></dt>
+	<dd><?=htmlspecialchars($tag->getAttribute("v"))?></dd>
 <?php
 	}
 ?>
@@ -193,6 +193,7 @@
 </div>
 <div id="map"></div>
 <script type="text/javascript">
+// <![CDATA[
 	var map = new OpenLayers.Map ("map", {
 		controls:[
 			new OpenLayers.Control.Navigation(),
@@ -439,6 +440,7 @@
 		var extent = segments[i].getDataExtent();
 		map.zoomToExtent(extent);
 	}
+// ]]>
 </script>
 <?php
 	$GUI->foot();
