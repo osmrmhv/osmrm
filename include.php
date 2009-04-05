@@ -17,6 +17,7 @@
 */
 
 	error_reporting(E_ALL);
+	set_time_limit(300);
 
 	header("Content-type: text/html; charset=UTF-8");
 	$GUI = new GUI();
