@@ -18,7 +18,7 @@
 
 	class OSMApiError extends Exception
 	{
-		function __construct($code)
+		function __construct($code, $call=null)
 		{
 			$message = _("Error during API request: ");
 			switch($code)
@@ -51,6 +51,9 @@
 					$message .= sprintf(_("Unknown error code %s"), $code);
 					break;
 			}
+
+			if($call)
+				$message .= " ".sprintf(_("API call was %s."), $call);
 
 			parent::__construct($message, $code);
 		}

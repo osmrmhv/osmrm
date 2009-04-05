@@ -42,14 +42,15 @@
 			if(!$fh)
 				throw new IOException(_("Could not connect to the API server."));
 			//echo "GET ".static::API_PREFIX.$url."<br />\n";
-			fwrite($fh, "GET ".$api_prefix.$url." HTTP/1.0\r\n");
+			$api_call = "GET ".$api_prefix.$url." HTTP/1.0";
+			fwrite($fh, $api_call."\r\n");
 			fwrite($fh, "Host: ".$api_server."\r\n");
 			fwrite($fh, "Connection: close\r\n");
 			fwrite($fh, "\r\n");
 
 			list(,$status) = explode(" ", fgets($fh), 3);
 			if($status != "200")
-				throw new OSMApiError($status);
+				throw new OSMApiError($status, $api_call);
 
 			while(!feof($fh))
 			{

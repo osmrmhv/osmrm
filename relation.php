@@ -117,7 +117,7 @@
 	<dd><?=sprintf(_("%s by %s"), $relation->getDOM()->getAttribute("timestamp"), "<a href=\"http://www.openstreetmap.org/user/".rawurlencode($relation->getDOM()->getAttribute("user"))."\">".htmlspecialchars($relation->getDOM()->getAttribute("user"))."</a>")?></dd>
 
 	<dt><?=htmlspecialchars(_("Total length"))?></dt>
-	<dd><?=number_format($total_length, 2, ",", " ")?>&thinsp;km</dd>
+	<dd><?=str_replace("\n", "&thinsp;", number_format($total_length, 2, ",", "\n"))?>&thinsp;km</dd>
 
 	<dt><?=htmlspecialchars(_("Sub-relations"))?></dt>
 	<dd><ul>
@@ -175,9 +175,9 @@
 ?>
 			<tr onmouseover="highlightSegment(<?=$i?>);" onmouseout="unhighlightSegment(<?=$i?>);" id="tr-segment-<?=$i?>" class="tr-segment-normal">
 				<td><?=htmlspecialchars($i+1)?></td>
-				<td><?=number_format($segments_connections[$i][0], 2, ",", " ")?>&thinsp;km</td>
-				<td><?php if(count($segments[1]) > 1){?><?=number_format(min($segments_connections[$i][3]), 2, ",", " ")?>&thinsp;km, <?=number_format(min($segments_connections[$i][4]), 2, ",", " ")?>&thinsp;km<?php }?></td>
-				<td><input type="checkbox" name="select-segment[<?=$i?>]" id="select-segment-<?=$i?>" checked="checked" onclick="segments[<?=$i?>].setVisibility(checked); refreshSelected()" /></td>
+				<td><?=str_replace("\n", "&thinsp;", number_format($segments_connections[$i][0], 2, ",", "\n"))?>&thinsp;km</td>
+				<td><?php if(count($segments[1]) > 1){?><?=str_replace("\n", "&thinsp;", number_format(min($segments_connections[$i][3]), 2, ",", "\n"))?>&thinsp;km, <?=str_replace("\n", "&thinsp;", number_format(min($segments_connections[$i][4]), 2, ",", "\n"))?>&thinsp;km<?php }?></td>
+				<td><input type="checkbox" name="select-segment[<?=$i?>]" id="select-segment-<?=$i?>" checked="checked" onclick="refreshSelected()" /></td>
 				<td><a href="javascript:zoomToSegment(<?=$i?>);"><?=htmlspecialchars(_("Zoom"))?></a></td>
 				<td><button disabled="disabled" id="pr-button-<?=$i?>" onclick="if(this.osmroutemanager) addPRSegment(this.osmroutemanager.i, this.osmroutemanager.reversed);">+</button></td>
 			</tr>
@@ -223,6 +223,9 @@
 	var styleMapNormal = new OpenLayers.StyleMap({strokeColor: "#0000ff", strokeWidth: 3, strokeOpacity: 0.5});
 	var styleMapHighlight = new OpenLayers.StyleMap({strokeColor: "#ff0080", strokeWidth: 3, strokeOpacity: 0.5});
 	var segments = [ ];
+	var segments_highlighted = [ ];
+	var segments_are_highlighted = [ ];
+	var segments_data = [ ];
 	var projection = new OpenLayers.Projection("EPSG:4326");
 <?php
 	foreach($segments[1] as $i=>$segment)
@@ -233,15 +236,16 @@
 ?>
 	segments[<?=$i?>] = new OpenLayers.Layer.PointTrack(<?=jsescape(sprintf(_("Segment %s"), $i+1))?>, {
 		styleMap: styleMapNormal,
-		projection: new OpenLayers.Projection("EPSG:4326")
+		projection: new OpenLayers.Projection("EPSG:4326"),
+		displayInLayerSwitcher: false
 	});
-	segments[<?=$i?>].addNodes([<?=implode(",", $segment_code)?>]);
-	segments[<?=$i?>].events.register("visibilitychanged", null, function(){refreshSelected();});
-	map.addLayer(segments[<?=$i?>]);
+	segments_data[<?=$i?>] = [<?=implode(",", $segment_code)?>];
+	segments[<?=$i?>].addNodes(segments_data[<?=$i?>]);
 <?php
 	}
 ?>
-	layerMarkers = new OpenLayers.Layer.Markers("Markers");
+	map.addLayers(segments);
+	layerMarkers = new OpenLayers.Layer.Markers("Markers", { displayInLayerSwitcher: false });
 	map.addLayer(layerMarkers);
 
 	var extent;
@@ -417,25 +421,58 @@
 
 	function highlightSegment(i)
 	{
-		segments[i].styleMap = styleMapHighlight;
-		segments[i].redraw();
+		segments_are_highlighted[i] = true;
+		if(!segments[i].getVisibility())
+			return;
+
+		if(!segments_highlighted[i])
+		{
+			segments_highlighted[i] = new OpenLayers.Layer.PointTrack(segments[i].name, {
+				styleMap: styleMapHighlight,
+				projection: new OpenLayers.Projection("EPSG:4326"),
+				displayInLayerSwitcher: false
+			});
+			segments_highlighted[i].addNodes(segments_data[i]);
+			segments_highlighted[i].setZIndex(100000);
+			map.addLayer(segments_highlighted[i]);
+		}
+
+		segments[i].setVisibility(false);
+		segments_highlighted[i].setVisibility(true);
 		document.getElementById("tr-segment-"+i).className = "tr-segment-highlight";
 	}
 
 	function unhighlightSegment(i)
 	{
-		segments[i].styleMap = styleMapNormal;
-		segments[i].redraw();
+		segments_are_highlighted[i] = false;
 		document.getElementById("tr-segment-"+i).className = "tr-segment-normal";
+
+		if(!segments_highlighted[i] || !segments_highlighted[i].getVisibility())
+			return;
+		segments_highlighted[i].setVisibility(false);
+		segments[i].setVisibility(true);
 	}
 
 	function refreshSelected()
 	{
 		for(var i=0; i<segments.length; i++)
 		{
-			document.getElementById("select-segment-"+i).checked = segments[i].getVisibility();
+			if(document.getElementById("select-segment-"+i).checked && (!segments_highlighted[i] || !segments_highlighted[i].getVisibility()) && !segments[i].getVisibility())
+			{
+				segments[i].setVisibility(true);
+				if(segments_are_highlighted[i])
+					highlightSegment(i);
+			}
+			else if(!document.getElementById("select-segment-"+i).checked)
+			{
+				segments[i].setVisibility(false);
+				if(segments_highlighted[i])
+					segments_highlighted[i].setVisibility(false);
+			}
 		}
 	}
+
+	refreshSelected();
 
 	function zoomToSegment(i)
 	{
