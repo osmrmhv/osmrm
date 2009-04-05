@@ -24,7 +24,7 @@
 
 		static public function get($url)
 		{
-			return parent::get($url);
+			return parent::get($url, self::API_SERVER, self::API_PORT, self::API_PREFIX);
 		}
 	}
 ?>
