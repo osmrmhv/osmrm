@@ -23,7 +23,7 @@
 	{
 		const API_SERVER = "www.openstreetmap.org";
 		const API_PORT = 80;
-		const API_PREFIX = "/api/0.5";
+		const API_PREFIX = "/api/0.6";
 
 		/**
 		 * @return OSMObject[]
