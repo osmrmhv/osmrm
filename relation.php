@@ -106,8 +106,22 @@
 		$tag = $tags->item($i);
 ?>
 	<dt><?=htmlspecialchars($tag->getAttribute("k"))?></dt>
+<?php
+		if(preg_match("/^url(:?)/i", $tag->getAttribute("k")))
+		{
+			$v = explode(";", $tag->getAttribute("v"));
+			foreach($v as $k=>$v1)
+				$v[$k] = "<a href=\"".htmlspecialchars(trim($v1))."\">".htmlspecialchars($v1)."</a>";
+?>
+	<dd><?=implode(";", $v)?></dd>
+<?php
+		}
+		else
+		{
+?>
 	<dd><?=htmlspecialchars($tag->getAttribute("v"))?></dd>
 <?php
+		}
 	}
 ?>
 </dl>
