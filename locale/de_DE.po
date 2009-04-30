@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSM Route Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 00:23+0200\n"
+"POT-Creation-Date: 2009-04-30 20:35+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: \n"
@@ -234,19 +234,19 @@ msgstr "Relationen suchen"
 msgid "Key"
 msgstr "Schlüssel"
 
-#: ../index.php:92
+#: ../index.php:93
 msgid "Value"
 msgstr "Wert"
 
-#: ../index.php:95
+#: ../index.php:96
 msgid "Search using OSM API"
 msgstr "Mit der OSM-API suchen"
 
-#: ../index.php:96
+#: ../index.php:97
 msgid "Search using XAPI"
 msgstr "Mit der XAPI suchen"
 
-#: ../index.php:97
-msgid "OSM API will probably be more current and a lot faster but won’t let you search for wild-cards or something else than a name."
-msgstr "Die OSM-API ist normalerweise aktueller und deutlich schneller, aber man kann keine Wildcards verwenden und nur nach dem name-Attribut suchen."
+#: ../index.php:98
+msgid "OSM API will probably be more current and a lot faster but won’t let you use wildcards."
+msgstr "Die OSM-API ist normalerweise aktueller und deutlich schneller, aber man kann keine Wildcards verwenden."
 

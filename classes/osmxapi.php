@@ -21,6 +21,7 @@
 	class OSMXAPI extends OSMAPI
 	{
 		const API_SERVER = "xapi.openstreetmap.org";
+		const API_PREFIX = "/api/0.5";
 
 		static public function get($url)
 		{

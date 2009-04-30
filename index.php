@@ -87,6 +87,7 @@
 			<dd><select id="i-search-key" name="search-key">
 				<option name="name"<?=isset($_GET["search-key"]) && $_GET["search-key"] == "name" ? " selected=\"selected\"" : ""?>>name</option>
 				<option name="ref"<?=isset($_GET["search-key"]) && $_GET["search-key"] == "ref" ? " selected=\"selected\"" : ""?>>ref</option>
+				<option name="operator"<?=isset($_GET["search-key"]) && $_GET["search-key"] == "operator" ? " selected=\"selected\"" : ""?>>operator</option>
 			</select></dd>
 
 			<dt><label for="i-search-value"><?=htmlspecialchars(_("Value"))?></label></dt>
@@ -94,7 +95,7 @@
 		</dl>
 		<input type="submit" value="<?=htmlspecialchars(_("Search using OSM API"))?>" />
 		<input type="submit" name="xapi" value="<?=htmlspecialchars(_("Search using XAPI"))?>" />
-		<p><?=htmlspecialchars(_("OSM API will probably be more current and a lot faster but won’t let you search for wild-cards or something else than a name."))?></p>
+		<p><?=htmlspecialchars(_("OSM API will probably be more current and a lot faster but won’t let you use wildcards."))?></p>
 	</fieldset>
 </form>
 <?php

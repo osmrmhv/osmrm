@@ -21,6 +21,8 @@
 
 	class OSMRelation extends OSMObject
 	{
+		private static $sortSegmentsCallbackReference = null;
+
 		function getMembers($create_objects=false)
 		{
 			$return = array();
@@ -201,11 +203,9 @@
 
 			// Resolve segments into nodes, calculate distance
 			$segments_nodes = array();
-			$segments_connections = array();
 			foreach($segments as $k=>$v)
 			{
 				$segments_nodes[$k] = array();
-				$segments_connections[$k] = array(0, array(), array());
 				foreach($v as $k2=>$way)
 				{
 					$way_members = $ways_ends[$way][0]->getMembers(true);
@@ -225,6 +225,56 @@
 			unset($segments);
 			unset($roundabout_points);
 
+			// Sort segments
+			// First, find the two ends with the greatest distance
+			$ends = array();
+			for($i=0; $i<count($segments_nodes); $i++)
+			{
+				$end1 = true;
+				$end2 = true;
+				for($j=0; $j<count($segments_nodes); $j++)
+				{
+					if($i == $j) continue;
+
+					if($segments_nodes[$i][0] == $segments_nodes[$j][0] || $segments_nodes[$i][0] == $segments_nodes[$j][count($segments_nodes[$j])-1])
+						$end1 = false;
+					if($segments_nodes[$i][count($segments_nodes[$i])-1] == $segments_nodes[$j][0] || $segments_nodes[$i][count($segments_nodes[$i])-1] == $segments_nodes[$j][count($segments_nodes[$j])-1])
+						$end2 = false;
+					if(!$end1 && !$end2)
+						break;
+				}
+				if($end1)
+					$ends[] = array($i, true, $segments_nodes[$i][0]);
+				if($end2)
+					$ends[] = array($i, false, $segments_nodes[$i][count($segments_nodes[$i])-1]);
+			}
+
+			$greatest = array(null, 0);
+			for($i=0; $i<count($ends); $i++)
+			{
+				for($j=$i+1; $j<count($ends); $j++)
+				{
+					$distance = getDistance($ends[$i][2], $ends[$j][2]);
+					if($distance > $greatest[1])
+						$greatest = array(array($ends[$i], $ends[$j]), $distance);
+				}
+			}
+
+			if($greatest[0])
+			{
+				$distance_x = abs($greatest[0][0][0]-$greatest[0][1][2][0]);
+				$distance_y = abs($greatest[0][0][1]-$greatest[0][1][2][1]);
+				if($distance_y > $distance_x)
+					$first = ($greatest[0][0][1] > $greatest[0][1][2][1] ? 0 : 1);
+				else
+					$first = ($greatest[0][0][0] > $greatest[0][1][2][0] ? 0 : 1);
+
+				self::$sortSegmentsCallbackReference = $greatest[0][$first][2];
+				usort($segments_nodes, array("OSMRelation", "sortSegmentsCallback"));
+			}
+
+			// Save calculated data to the database
+
 			$this_id_quote = $sql->quote($this_id);
 			$sql->beginTransaction();
 			$sql->query("DELETE FROM relation_updated WHERE relation = ".$this_id_quote.";");
@@ -239,5 +289,14 @@
 			$sql->commit();
 
 			return array($last_update, $segments_nodes);
+		}
+
+		private static function sortSegmentsCallback($a, $b)
+		{
+			$distance1 = min(getDistance(self::$sortSegmentsCallbackReference, $a[0]), getDistance(self::$sortSegmentsCallbackReference, $a[count($a)-1]));
+			$distance2 = min(getDistance(self::$sortSegmentsCallbackReference, $b[0]), getDistance(self::$sortSegmentsCallbackReference, $b[count($b)-1]));
+			if($distance1 < $distance2) return -1;
+			elseif($distance1 > $distance2) return 1;
+			else return 0;
 		}
 	}
