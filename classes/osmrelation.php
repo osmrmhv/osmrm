@@ -25,6 +25,9 @@
 
 		function getMembers($create_objects=false)
 		{
+			if($create_objects)
+				OSMObject::downloadFull("relation", $this->getDOM()->getAttribute("id"));
+
 			$return = array();
 			$members = $this->getDOM()->getElementsByTagName("member");
 			for($i=0; $i<$members->length; $i++)
@@ -40,14 +43,20 @@
 			return $return;
 		}
 
-		function getRecursiveWays()
+		function getRecursiveWays(&$ignore_relations = null)
 		{
 			$members = array();
+			if(!isset($ignore_relations))
+				$ignore_relations = array();
+			$ignore_relations[] = $this->getDOM()->getAttribute("id");
 
 			foreach($this->getMembers(true) as $member)
 			{
 				if($member["type"] == "relation")
-					$members += $member["object"]->getRecursiveWays();
+				{
+					if(!in_array($member["ref"], $ignore_relations))
+						$members += $member["object"]->getRecursiveWays(&$ignore_relations);
+				}
 				elseif($member["type"] == "way")
 					$members[$member["ref"]] = $member["object"];
 			}

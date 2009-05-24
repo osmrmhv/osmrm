@@ -22,6 +22,9 @@
 	{
 		function getMembers($create_objects=false)
 		{
+			if($create_objects)
+				OSMObject::downloadFull("way", $this->getDOM()->getAttribute("id"));
+
 			$return = array();
 			$members = $this->getDOM()->getElementsByTagName("nd");
 			for($i=0; $i<$members->length; $i++)
@@ -45,6 +48,8 @@
 
 			if($first_member->getAttribute("lat") != $last_member->getAttribute("lat") || $first_member->getAttribute("lon") != $last_member->getAttribute("lon"))
 				return false;
+
+			array_pop($members);
 
 			$lat_sum = 0;
 			$lon_sum = 0;
