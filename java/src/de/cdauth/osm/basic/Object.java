@@ -41,27 +41,10 @@ abstract public class Object extends XMLObject
 	{
 		super(a_dom);
 	}
-
-	static public final String TYPE = null;
 	
 	public boolean equals(Object a_other)
 	{
 		return (getDOM().getTagName() == a_other.getDOM().getTagName() && !getDOM().getAttribute("id").equals("") && getDOM().getAttribute("id") == a_other.getDOM().getAttribute("id"));
-	}
-
-	/**
-	 * All OSM objects are cached to reduce the number of API calls. This method saves an OSM object to the cache. 
-	 * @param a_object
-	 */
-
-	public static void cache(Object a_object)
-	{
-		if(a_object.getDOM().getTagName().equals("node"))
-			Node.cache((Node) a_object);
-		else if(a_object.getDOM().getTagName().equals("way"))
-			Way.cache((Way) a_object);
-		else if(a_object.getDOM().getTagName().equals("relation"))
-			Relation.cache((Relation) a_object);
 	}
 
 	/**
@@ -76,7 +59,7 @@ abstract public class Object extends XMLObject
 	 * @throws ParserConfigurationException
 	 */
 	
-	protected static <T extends Object> Hashtable<String,T> fetchWithCache(String[] a_ids, Hashtable<String,T> a_cache) throws IOException, APIError, SAXException, ParserConfigurationException
+	protected static <T extends Object> Hashtable<String,T> fetchWithCache(String[] a_ids, Hashtable<String,T> a_cache, String a_type) throws IOException, APIError, SAXException, ParserConfigurationException
 	{
 		Hashtable<String,T> ret = new Hashtable<String,T>();
 		ArrayList<String> ids = new ArrayList<String>(Arrays.asList(a_ids));
@@ -88,9 +71,12 @@ abstract public class Object extends XMLObject
 			ids.remove(i--);
 		}
 		
-		Object[] fetched = API.get("/"+T.TYPE+"s/?"+T.TYPE+"="+URLEncoder.encode(API.joinStringArray(",", ids.toArray(new String[0])), "UTF-8"));
-		for(int i=0; i<fetched.length; i++)
-			ret.put(fetched[i].getDOM().getAttribute("id"), (T)fetched[i]);
+		if(ids.size() > 0)
+		{
+			Object[] fetched = API.get("/"+a_type+"s/?"+a_type+"="+URLEncoder.encode(API.joinStringArray(",", ids.toArray(new String[0])), "UTF-8"));
+			for(int i=0; i<fetched.length; i++)
+				ret.put(fetched[i].getDOM().getAttribute("id"), (T)fetched[i]);
+		}
 		
 		return ret;
 	}
@@ -106,10 +92,10 @@ abstract public class Object extends XMLObject
 	 * @throws ParserConfigurationException
 	 */
 	
-	protected static <T extends Object> T fetchWithCache(String a_id, Hashtable<String,T> a_cache) throws IOException, APIError, SAXException, ParserConfigurationException
+	protected static <T extends Object> T fetchWithCache(String a_id, Hashtable<String,T> a_cache, String a_type) throws IOException, APIError, SAXException, ParserConfigurationException
 	{
 		String[] ids = { a_id };
-		return fetchWithCache(ids, a_cache).get(a_id);
+		return fetchWithCache(ids, a_cache, a_type).get(a_id);
 	}
 	
 	/**

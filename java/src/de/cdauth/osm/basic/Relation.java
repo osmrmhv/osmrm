@@ -29,7 +29,6 @@ import org.xml.sax.SAXException;
 
 public class Relation extends de.cdauth.osm.basic.Object
 {
-	static public final String TYPE = "relation";
 	static private Hashtable<String,Relation> sm_cache = new Hashtable<String,Relation>();
 
 	protected Relation(Element a_dom)
@@ -39,12 +38,12 @@ public class Relation extends de.cdauth.osm.basic.Object
 	
 	public static Hashtable<String,Relation> fetch(String[] a_ids) throws IOException, APIError, SAXException, ParserConfigurationException
 	{
-		return fetchWithCache(a_ids, sm_cache);
+		return fetchWithCache(a_ids, sm_cache, "relation");
 	}
 	
 	public static Relation fetch(String a_id) throws IOException, APIError, SAXException, ParserConfigurationException
 	{
-		return fetchWithCache(a_id, sm_cache);
+		return fetchWithCache(a_id, sm_cache, "relation");
 	}
 	
 	protected static boolean isCached(String a_id)
@@ -268,10 +267,8 @@ public class Relation extends de.cdauth.osm.basic.Object
 				if(lastEndNode == null && roundaboutReplacement.containsKey(nodes[0].getLonLat()))
 					segmentNodes.add(roundaboutReplacement.get(nodes[0].getLonLat()));
 				boolean reverse = (lastEndNode != null && nodes[nodes.length-1].equals(lastEndNode));
-				int k;
-				for(k = (reverse ? nodes.length-1 : 0) + (lastEndNode == null ? 0 : (reverse ? -1 : 1)); (reverse) ? (k > 0) : (k < nodes.length); k += (reverse ? -1 : 1))
-					segmentNodes.add(nodes[k].getLonLat());
-				lastEndNode = nodes[k];
+				for(int k = (reverse ? nodes.length-1 : 0) + (lastEndNode == null ? 0 : (reverse ? -1 : 1)); (reverse) ? (k > 0) : (k < nodes.length); k += (reverse ? -1 : 1))
+					segmentNodes.add((lastEndNode = nodes[k]).getLonLat());
 				if(roundaboutReplacement.containsKey(lastEndNode.getLonLat()))
 					segmentNodes.add(roundaboutReplacement.get(lastEndNode.getLonLat()));
 			}
@@ -337,7 +334,7 @@ public class Relation extends de.cdauth.osm.basic.Object
 			else
 				referencePoint = greatestDistancePoints[greatestDistancePoints[0].getLon() < greatestDistancePoints[1].getLon() ? 0 : 1];
 			
-			synchronized(RelationSegment.sm_sortingReference)
+			synchronized(RelationSegment.sm_sortingReferenceSynchronized)
 			{
 				RelationSegment.sm_sortingReference = referencePoint;
 				Arrays.sort(segmentsNodes);

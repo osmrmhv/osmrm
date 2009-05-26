@@ -63,22 +63,38 @@ public class API
 		if(root == null)
 			throw new APIError("The API server sent no data.");
 
-		Vector<de.cdauth.osm.basic.Object> ret = new Vector<de.cdauth.osm.basic.Object>();
+		Vector<Object> ret = new Vector<Object>();
 
 		nodes = root.getChildNodes();
 		for(int i=0; i<nodes.getLength(); i++)
 		{
 			if(nodes.item(i).getNodeType() != org.w3c.dom.Node.ELEMENT_NODE)
 				continue;
-			de.cdauth.osm.basic.Object el = (de.cdauth.osm.basic.Object) nodes.item(i);
-			ret.add(el);
-			de.cdauth.osm.basic.Object.cache(el);
+			Element element = (Element)nodes.item(i);
+			if(element.getTagName().equals("node"))
+			{
+				Node el = new Node(element);
+				Node.cache(el);
+				ret.add(el);
+			}
+			else if(element.getTagName().equals("way"))
+			{
+				Way el = new Way(element);
+				Way.cache(el);
+				ret.add(el);
+			}
+			else if(element.getTagName().equals("relation"))
+			{
+				Relation el = new Relation(element);
+				Relation.cache(el);
+				ret.add(el);
+			}
 		}
 
-		return ret.toArray(new de.cdauth.osm.basic.Object[0]);
+		return ret.toArray(new Object[0]);
 	}
 
-	public static de.cdauth.osm.basic.Object[] get(String a_url) throws IOException, APIError, SAXException, ParserConfigurationException
+	public static Object[] get(String a_url) throws IOException, APIError, SAXException, ParserConfigurationException
 	{
 		return get(a_url, API_SERVER, API_PORT, API_PREFIX);
 	}

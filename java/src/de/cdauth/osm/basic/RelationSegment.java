@@ -20,12 +20,13 @@ package de.cdauth.osm.basic;
 public class RelationSegment implements Comparable<RelationSegment>
 {
 	private LonLat[] m_nodes;
-	private long m_distance = -1;
+	private double m_distance = -1;
 	
 	/**
 	 * Segments are sorted by their distance to this point. Be sure to set this value before using compareTo() and to unset it afterwards, both inside a synchronized block.
 	 */
 	protected static LonLat sm_sortingReference = null;
+	protected static java.lang.Object sm_sortingReferenceSynchronized = new java.lang.Object();
 	
 	protected RelationSegment(LonLat[] a_nodes)
 	{

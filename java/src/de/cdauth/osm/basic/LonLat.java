@@ -25,9 +25,19 @@ public class LonLat
 		return m_lat;
 	}
 	
-	public boolean equals(LonLat a_other)
+	public boolean equals(java.lang.Object a_other)
 	{
-		return (getLon() == a_other.getLon() && getLat() == a_other.getLat());
+		if(a_other instanceof LonLat)
+		{
+			LonLat other = (LonLat) a_other;
+			return (getLon() == other.getLon() && getLat() == other.getLat());
+		}
+		return false;
+	}
+
+	public int hashCode()
+	{
+		return (((int)Math.round(getLat()*128)) << 16) | ((int)Math.round(getLon()*128)); 
 	}
 	
 	/**
@@ -48,5 +58,10 @@ public class LonLat
 		double dlat = lat2 - lat1;
 		double a = Math.pow((Math.sin(dlat/2)),2) + Math.cos(lat1) * Math.cos(lat2) * Math.pow((Math.sin(dlon/2)),2);
 		return EARTH_RADIUS * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+	}
+	
+	public String toString()
+	{
+		return "http://osm.cdauth.de/map/#mlat[0]="+getLat()+";mlon[0]="+getLon()+";zoom=15;lat="+getLat()+";lon="+getLon();
 	}
 }

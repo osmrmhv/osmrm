@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 
 public class Node extends de.cdauth.osm.basic.Object
 {
-	static public final String TYPE = "node";
+	static public String TYPE = "node";
 	static private Hashtable<String,Node> sm_cache = new Hashtable<String,Node>();
 	
 	protected Node(Element a_dom)
@@ -35,12 +35,12 @@ public class Node extends de.cdauth.osm.basic.Object
 	
 	public static Hashtable<String,Node> fetch(String[] a_ids) throws IOException, APIError, SAXException, ParserConfigurationException
 	{
-		return fetchWithCache(a_ids, sm_cache);
+		return fetchWithCache(a_ids, sm_cache, "node");
 	}
 	
 	public static Node fetch(String a_id) throws IOException, APIError, SAXException, ParserConfigurationException
 	{
-		return fetchWithCache(a_id, sm_cache);
+		return fetchWithCache(a_id, sm_cache, "node");
 	}
 	
 	protected static boolean isCached(String a_id)
@@ -55,6 +55,6 @@ public class Node extends de.cdauth.osm.basic.Object
 	
 	public LonLat getLonLat()
 	{
-		return new LonLat(Double.parseDouble(getDOM().getAttribute("lon")), Double.parseDouble(getDOM().getAttribute("lat")));
+		return new LonLat(Float.parseFloat(getDOM().getAttribute("lon")), Float.parseFloat(getDOM().getAttribute("lat")));
 	}
 }

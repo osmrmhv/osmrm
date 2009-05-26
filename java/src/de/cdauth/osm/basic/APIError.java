@@ -17,17 +17,33 @@
 
 package de.cdauth.osm.basic;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 
 public class APIError extends Exception
 {
 	private static final long serialVersionUID = 437977542958386370L;
+	private String m_message;
 
 	public APIError(HttpURLConnection a_connection)
 	{
+		m_message = "URL: "+a_connection.getURL().toString();
+		try
+		{
+			m_message += "\nStatus: "+a_connection.getResponseCode();
+		}
+		catch(IOException e)
+		{
+		}
 	}
 	
 	public APIError(String a_message)
 	{
+		m_message = a_message;
+	}
+	
+	public String toString()
+	{
+		return m_message;
 	}
 }

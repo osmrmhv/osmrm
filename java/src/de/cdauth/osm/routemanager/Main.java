@@ -64,16 +64,17 @@ public class Main
 		RelationSegment[] segmentated = relation.segmentate();
 		
 		System.out.println("Successfully parsed relation "+relation.getDOM().getAttribute("id")+".");
-		long totalLength = 0;
+		double totalLength = 0;
 		for(int i=0; i<segmentated.length; i++)
 		{
-			System.out.println("Segment "+i+": "+Math.round(segmentated[i].getDistance()*1000)/1000+" km");
+			System.out.println("Segment "+i+": "+Math.round(segmentated[i].getDistance()*1000)+" m, "+segmentated[i].getNodes().length+" nodes, first node "+segmentated[i].getEnd1()+", last node "+segmentated[i].getEnd2());
 			totalLength += segmentated[i].getDistance();
 		}
 		System.out.println("----");
-		System.out.println("Total length: "+Math.round(totalLength*1000)/1000+" km");
+		System.out.println("Total length: "+Math.round(totalLength*1000)+" m");
+		System.out.println(new de.cdauth.osm.basic.LonLat(100,100).getDistance(new de.cdauth.osm.basic.LonLat(101,101)));
 		
-		//sm_cache.cacheRelationSegments(segmentated);
+		sm_cache.cacheRelationSegments(segmentated, relation, downloadTime);
 	}
 	
 	public static Cache getCache()

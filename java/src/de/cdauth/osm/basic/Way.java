@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
 
 public class Way extends de.cdauth.osm.basic.Object
 {
-	static public final String TYPE = "way";
+	static public String TYPE = "way";
 	static private Hashtable<String,Way> sm_cache = new Hashtable<String,Way>();
 	
 	protected Way(Element a_dom)
@@ -36,12 +36,12 @@ public class Way extends de.cdauth.osm.basic.Object
 	
 	public static Hashtable<String,Way> fetch(String[] a_ids) throws IOException, APIError, SAXException, ParserConfigurationException
 	{
-		return fetchWithCache(a_ids, sm_cache);
+		return fetchWithCache(a_ids, sm_cache, "way");
 	}
 	
 	public static Way fetch(String a_id) throws IOException, APIError, SAXException, ParserConfigurationException
 	{
-		return fetchWithCache(a_id, sm_cache);
+		return fetchWithCache(a_id, sm_cache, "way");
 	}
 	
 	protected static boolean isCached(String a_id)
