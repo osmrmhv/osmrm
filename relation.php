@@ -21,6 +21,10 @@
 	if(isset($_GET["id"]) && trim($_GET["id"]) != "")
 		$GUI->option("title", sprintf(_("Relation %s"), $_GET["id"]));
 
+	$render = !isset($_GET["norender"]);
+	if(!$render)
+		$GUI->option("bodyClass", "norender");
+
 	$GUI->head();
 
 	if(!isset($_GET["id"]))
@@ -169,7 +173,14 @@
 	</ul></dd>
 </dl>
 <h2><?=htmlspecialchars(_("Segments"))?></h2>
+<?php
+	if($render)
+	{
+?>
 <p><?=htmlspecialchars(_("Get GPS coordinates by clicking on the map."))?></p>
+<?php
+	}
+?>
 <div id="segment-list">
 	<table>
 		<thead>
@@ -177,8 +188,15 @@
 				<th><?=htmlspecialchars(_("Segment #"))?></th>
 				<th><?=htmlspecialchars(_("Length"))?></th>
 				<th><?=htmlspecialchars(_("Distance to next segments"))?></th>
+<?php
+	if($render)
+	{
+?>
 				<th><?=htmlspecialchars(_("Visible"))?></th>
 				<th><?=htmlspecialchars(_("Zoom"))?></th>
+<?php
+	}
+?>
 				<th><?=htmlspecialchars(_("Add to personal route"))?></th>
 			</tr>
 		</thead>
@@ -187,12 +205,19 @@
 	foreach($segments[1] as $i=>$segment)
 	{
 ?>
-			<tr onmouseover="highlightSegment(<?=$i?>);" onmouseout="unhighlightSegment(<?=$i?>);" id="tr-segment-<?=$i?>" class="tr-segment-normal">
+			<tr<?php if($render){?> onmouseover="highlightSegment(<?=$i?>);" onmouseout="unhighlightSegment(<?=$i?>);"<?php }?> id="tr-segment-<?=$i?>" class="tr-segment-normal">
 				<td><?=htmlspecialchars($i+1)?></td>
 				<td><?=str_replace("\n", "&thinsp;", number_format($segments_connections[$i][0], 2, ",", "\n"))?>&thinsp;km</td>
 				<td><?php if(count($segments[1]) > 1){?><?=str_replace("\n", "&thinsp;", number_format(min($segments_connections[$i][3]), 2, ",", "\n"))?>&thinsp;km, <?=str_replace("\n", "&thinsp;", number_format(min($segments_connections[$i][4]), 2, ",", "\n"))?>&thinsp;km<?php }?></td>
+<?php
+		if($render)
+		{
+?>
 				<td><input type="checkbox" name="select-segment[<?=$i?>]" id="select-segment-<?=$i?>" checked="checked" onclick="refreshSelected()" /></td>
 				<td><a href="javascript:zoomToSegment(<?=$i?>);"><?=htmlspecialchars(_("Zoom"))?></a></td>
+<?php
+		}
+?>
 				<td><button disabled="disabled" id="pr-button-<?=$i?>" onclick="if(this.osmroutemanager) addPRSegment(this.osmroutemanager.i, this.osmroutemanager.reversed);">+</button></td>
 			</tr>
 <?php
@@ -207,9 +232,20 @@
 		<li><button onclick="PRDownloadGPX()"><?=htmlspecialchars(_("Download GPX"))?></button></li>
 	</ul>
 </div>
+<?php
+	if($render)
+	{
+?>
 <div id="map"></div>
+<?php
+	}
+?>
 <script type="text/javascript">
 // <![CDATA[
+<?php
+	if($render)
+	{
+?>
 	var map = new OpenLayers.Map ("map", {
 		controls:[
 			new OpenLayers.Control.Navigation(),
@@ -242,11 +278,11 @@
 	var segments_data = [ ];
 	var projection = new OpenLayers.Projection("EPSG:4326");
 <?php
-	foreach($segments[1] as $i=>$segment)
-	{
-		$segment_code = array();
-		foreach($segment as $point)
-			$segment_code[] = "new OpenLayers.Feature(segments[".$i."], new OpenLayers.LonLat(".$point[1].", ".$point[0].").transform(projection, map.getProjectionObject()))";
+		foreach($segments[1] as $i=>$segment)
+		{
+			$segment_code = array();
+			foreach($segment as $point)
+				$segment_code[] = "new OpenLayers.Feature(segments[".$i."], new OpenLayers.LonLat(".$point[1].", ".$point[0].").transform(projection, map.getProjectionObject()))";
 ?>
 	segments[<?=$i?>] = new OpenLayers.Layer.PointTrack(<?=jsescape(sprintf(_("Segment %s"), $i+1))?>, {
 		styleMap: styleMapNormal,
@@ -256,7 +292,7 @@
 	segments_data[<?=$i?>] = [<?=implode(",", $segment_code)?>];
 	segments[<?=$i?>].addNodes(segments_data[<?=$i?>]);
 <?php
-	}
+		}
 ?>
 	map.addLayers(segments);
 	layerMarkers = new OpenLayers.Layer.Markers("Markers", { displayInLayerSwitcher: false });
@@ -313,6 +349,8 @@
 	click.activate();
 
 <?php
+	}
+
 	$pr_allowed_forward = array();
 	$pr_allowed_backward = array();
 	foreach($segments_connections as $i=>$segment)
@@ -433,6 +471,10 @@
 
 	updatePRButtons();
 
+<?php
+	if($render)
+	{
+?>
 	function highlightSegment(i)
 	{
 		segments_are_highlighted[i] = true;
@@ -493,6 +535,9 @@
 		var extent = segments[i].getDataExtent();
 		map.zoomToExtent(extent);
 	}
+<?php
+	}
+?>
 // ]]>
 </script>
 <?php

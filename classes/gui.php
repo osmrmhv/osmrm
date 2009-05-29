@@ -63,7 +63,7 @@
 		<script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
 		<script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
 	</head>
-	<body>
+	<body<?=$this->option("bodyClass") ? " class=\"".htmlspecialchars($this->option("bodyClass"))."\"" : ""?>>
 		<h1><?=htmlspecialchars($title)?></h1>
 <?php
 			$languages = array("en_GB" => "English", "de_DE" => "Deutsch");
