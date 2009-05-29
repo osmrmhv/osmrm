@@ -35,11 +35,6 @@ public class Main
 
 	public static void main(String[] a_args) throws ArgumentParserException, ClassNotFoundException, SQLException, IOException, APIError, SAXException, ParserConfigurationException
 	{
-		System.out.println("This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.");
-		System.out.println("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.");
-		System.out.println("You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.");
-		System.out.println("");
-
 		ArgumentParser arguments = new ArgumentParser("OSM Route Manager");
 		
 		Argument token_relation = new Argument('r', "relation");
@@ -54,7 +49,16 @@ public class Main
 		token_cache.setRequired(true);
 		arguments.addArgument(token_cache);
 		
+		Argument token_quiet = new Argument('q', "quiet");
+		token_quiet.setDescription("Only print errors.");
+		arguments.addArgument(token_quiet);
+		
 		arguments.parseArguments(a_args);
+		
+		System.out.println("This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.");
+		System.out.println("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.");
+		System.out.println("You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.");
+		System.out.println("");
 		
 		sm_cache = new Cache(token_cache.parameter());
 		
@@ -72,7 +76,6 @@ public class Main
 		}
 		System.out.println("----");
 		System.out.println("Total length: "+Math.round(totalLength*1000)+" m");
-		System.out.println(new de.cdauth.osm.basic.LonLat(100,100).getDistance(new de.cdauth.osm.basic.LonLat(101,101)));
 		
 		sm_cache.cacheRelationSegments(segmentated, relation, downloadTime);
 	}

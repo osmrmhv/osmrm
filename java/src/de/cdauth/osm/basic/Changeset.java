@@ -19,52 +19,36 @@ package de.cdauth.osm.basic;
 
 import java.io.IOException;
 import java.util.Hashtable;
-import java.util.TreeMap;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-public class Node extends de.cdauth.osm.basic.Object
+public class Changeset extends Object
 {
-	static private Hashtable<String,Node> sm_cache = new Hashtable<String,Node>();
+	static private Hashtable<String,Changeset> sm_cache = new Hashtable<String,Changeset>();
 	
-	protected Node(Element a_dom)
+	protected Changeset(Element a_dom)
 	{
 		super(a_dom);
 	}
 	
-	public static Hashtable<String,Node> fetch(String[] a_ids) throws IOException, APIError, SAXException, ParserConfigurationException
+	public static Changeset fetch(String a_id) throws IOException, APIError, SAXException, ParserConfigurationException
 	{
-		return fetchWithCache(a_ids, sm_cache, "node");
-	}
-	
-	public static Node fetch(String a_id) throws IOException, APIError, SAXException, ParserConfigurationException
-	{
-		return fetchWithCache(a_id, sm_cache, "node");
-	}
-	
-	public static TreeMap<Long,Node> getHistory(String a_id) throws IOException, SAXException, ParserConfigurationException, APIError
-	{
-		return fetchHistory(a_id, sm_cache, "node");
-	}
-	
-	public static Node fetch(String a_id, String a_version) throws IOException, APIError, SAXException, ParserConfigurationException
-	{
-		return fetchVersion(a_id, sm_cache, "node", a_version);
+		return fetchWithCache(a_id, sm_cache, "changeset");
 	}
 	
 	protected static boolean isCached(String a_id)
 	{
 		return sm_cache.containsKey(a_id);
 	}
-	
-	public static void cache(Node a_object)
+
+	public static void cache(Changeset a_object)
 	{
 		sm_cache.put(a_object.getDOM().getAttribute("id"), a_object);
 	}
 	
-	public LonLat getLonLat()
+	public ChangesetContent getContent() throws IOException, APIError, SAXException, ParserConfigurationException
 	{
-		return new LonLat(Float.parseFloat(getDOM().getAttribute("lon")), Float.parseFloat(getDOM().getAttribute("lat")));
+		return ChangesetContent.fetch(getDOM().getAttribute("id"));
 	}
 }

@@ -46,7 +46,7 @@ public class RelationSegment implements Comparable<RelationSegment>
 	
 	public int compareTo(RelationSegment o)
 	{
-		return getReferenceDistance().compareTo(o.getReferenceDistance());
+		return o.getReferenceDistance().compareTo(getReferenceDistance());
 	}
 	
 	public LonLat getEnd1()

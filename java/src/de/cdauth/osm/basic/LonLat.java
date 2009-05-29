@@ -27,6 +27,8 @@ public class LonLat
 	
 	public boolean equals(java.lang.Object a_other)
 	{
+		if(a_other == null)
+			return false;
 		if(a_other instanceof LonLat)
 		{
 			LonLat other = (LonLat) a_other;
@@ -62,6 +64,7 @@ public class LonLat
 	
 	public String toString()
 	{
-		return "http://osm.cdauth.de/map/#mlat[0]="+getLat()+";mlon[0]="+getLon()+";zoom=15;lat="+getLat()+";lon="+getLon();
+		//return "http://osm.cdauth.de/map/#mlat[0]="+getLat()+";mlon[0]="+getLon()+";zoom=15;lat="+getLat()+";lon="+getLon();
+		return getLat()+","+getLon();
 	}
 }

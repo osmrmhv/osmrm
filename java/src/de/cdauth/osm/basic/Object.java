@@ -22,6 +22,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -42,9 +44,35 @@ abstract public class Object extends XMLObject
 		super(a_dom);
 	}
 	
-	public boolean equals(Object a_other)
+	public boolean equals(java.lang.Object a_other)
 	{
-		return (getDOM().getTagName() == a_other.getDOM().getTagName() && !getDOM().getAttribute("id").equals("") && getDOM().getAttribute("id") == a_other.getDOM().getAttribute("id"));
+		if(a_other instanceof Object)
+		{
+			Object other = (Object) a_other;
+			return (getDOM().getTagName().equals(other.getDOM().getTagName()) && !getDOM().getAttribute("id").equals("") && getDOM().getAttribute("id").equals(other.getDOM().getAttribute("id")) && getDOM().getAttribute("version").equals(other.getDOM().getAttribute("version")));
+		}
+		else
+			return false;
+	}
+	
+	public int hashCode()
+	{
+		return new Long(getDOM().getAttribute("id")).hashCode();
+	}
+	
+	protected static <T extends Object> T fetchVersion(String a_id, Hashtable<String,T> a_cache, String a_type, String a_version) throws IOException, APIError, SAXException, ParserConfigurationException
+	{
+		if(a_cache.containsKey(a_id))
+		{
+			T el = a_cache.get(a_id);
+			if(el.getDOM().getAttribute("version").equals(a_version))
+				return el;
+		}
+		
+		Object[] fetched = API.get("/"+a_type+"/"+a_id+"/"+a_version);
+		if(fetched.length < 1)
+			throw new APIError("Server sent no data.");
+		return (T) fetched[0];
 	}
 
 	/**
@@ -73,7 +101,11 @@ abstract public class Object extends XMLObject
 		
 		if(ids.size() > 0)
 		{
-			Object[] fetched = API.get("/"+a_type+"s/?"+a_type+"="+URLEncoder.encode(API.joinStringArray(",", ids.toArray(new String[0])), "UTF-8"));
+			Object[] fetched;
+			if(ids.size() == 1)
+				fetched = API.get("/"+a_type+"/"+ids.get(0)); // URLEncoder.encode(, "UTF-8");
+			else
+				fetched = API.get("/"+a_type+"s/?"+a_type+"s="+API.joinStringArray(",", ids.toArray(new String[0])));
 			for(int i=0; i<fetched.length; i++)
 				ret.put(fetched[i].getDOM().getAttribute("id"), (T)fetched[i]);
 		}
@@ -96,6 +128,31 @@ abstract public class Object extends XMLObject
 	{
 		String[] ids = { a_id };
 		return fetchWithCache(ids, a_cache, a_type).get(a_id);
+	}
+	
+	/**
+	 * Returns a TreeMap of all versions of the element. The versions are ordered from the oldest to the newest. The indexes of the TreeMap match the version number.
+	 * @param <T>
+	 * @param a_id
+	 * @param a_type
+	 * @return
+	 * @throws APIError 
+	 * @throws ParserConfigurationException 
+	 * @throws SAXException 
+	 * @throws IOException 
+	 */
+	protected static <T extends Object> TreeMap<Long,T> fetchHistory(String a_id, Hashtable<String,T> a_cache, String a_type) throws IOException, SAXException, ParserConfigurationException, APIError
+	{
+		Object[] historyElements = API.get("/"+a_type+"/history", false);
+		TreeMap<Long,T> ordered = new TreeMap<Long,T>();
+		for(Object element : historyElements)
+			ordered.put(Long.parseLong(element.getDOM().getAttribute("version")), (T)element);
+		if(a_cache != null)
+		{
+			T last = ordered.get(ordered.lastKey());
+			a_cache.put(last.getDOM().getAttribute("id"), last);
+		}
+		return ordered;
 	}
 	
 	/**

@@ -21,8 +21,6 @@ import org.w3c.dom.Element;
 
 public class RelationMember extends XMLObject
 {
-	private Object m_object;
-
 	public RelationMember(Element a_dom)
 	{
 		super(a_dom);

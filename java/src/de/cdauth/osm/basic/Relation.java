@@ -20,8 +20,9 @@ package de.cdauth.osm.basic;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.TreeMap;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -44,6 +45,16 @@ public class Relation extends de.cdauth.osm.basic.Object
 	public static Relation fetch(String a_id) throws IOException, APIError, SAXException, ParserConfigurationException
 	{
 		return fetchWithCache(a_id, sm_cache, "relation");
+	}
+	
+	public static TreeMap<Long,Relation> getHistory(String a_id) throws IOException, SAXException, ParserConfigurationException, APIError
+	{
+		return fetchHistory(a_id, sm_cache, "relation");
+	}
+	
+	public static Relation fetch(String a_id, String a_version) throws IOException, APIError, SAXException, ParserConfigurationException
+	{
+		return fetchVersion(a_id, sm_cache, "relation", a_version);
 	}
 	
 	protected static boolean isCached(String a_id)
@@ -103,26 +114,100 @@ public class Relation extends de.cdauth.osm.basic.Object
 			API.get("/relation/"+a_id+"/full");
 	}
 	
-	private Vector<Way> getWaysRecursive(Vector<String> a_ignore_relations) throws IOException, APIError, SAXException, ParserConfigurationException
+	/**
+	 * Downloads all members of this relation and its sub-relations. Acts like a full download, but recursive. The number of API requests is optimised for the case of many sub-relations: as many relations as possible are downloaded in each API request, all ways and all nodes are downloaded in one additional request for both.
+	 * As the OSM API seems to be optimised for full fetches and takes quite a time to respond to the Way and Node request, this function may save requests but not time (at least with the current speed of the API).
+	 * @param a_id
+	 * @throws IOException
+	 * @throws APIError
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 */
+	
+	public static void downloadRecursive(String a_id) throws IOException, APIError, SAXException, ParserConfigurationException
+	{
+		HashSet<String> checkRelations = new HashSet<String>();
+		HashSet<String> downloadRelations = new HashSet<String>();
+		HashSet<String> containedRelations = new HashSet<String>();
+		
+		HashSet<String> downloadWays = new HashSet<String>();
+		HashSet<String> downloadNodes = new HashSet<String>();
+
+		if(!isCached(a_id))
+			downloadFull(a_id);
+		
+		checkRelations.add(a_id);
+		while(checkRelations.size() > 0)
+		{
+			for(String id : checkRelations)
+			{
+				for(RelationMember member : Relation.fetch(id).getMembers())
+				{
+					if(member.getDOM().getAttribute("type").equals("relation") && !containedRelations.contains(member.getDOM().getAttribute("ref")))
+						downloadRelations.add(member.getDOM().getAttribute("ref"));
+					else if(member.getDOM().getAttribute("type").equals("way"))
+						downloadWays.add(member.getDOM().getAttribute("ref"));
+					else if(member.getDOM().getAttribute("type").equals("node"))
+						downloadNodes.add(member.getDOM().getAttribute("ref"));
+				}
+			}
+			if(downloadRelations.size() == 1)
+			{
+				String one = downloadRelations.iterator().next();
+				if(isCached(one))
+					Relation.downloadFull(one);
+			}
+			else if(downloadRelations.size() > 1)
+				Relation.fetch(downloadRelations.toArray(new String[0]));
+			
+			containedRelations.addAll(downloadRelations);
+			checkRelations = downloadRelations;
+			downloadRelations = new HashSet<String>();
+		}
+		
+		Way.fetch(downloadWays.toArray(new String[0]));
+		
+		for(String id : downloadWays)
+		{
+			for(String nodeID : Way.fetch(id).getMembers())
+				downloadNodes.add(nodeID);
+		}
+		
+		Node.fetch(downloadNodes.toArray(new String[0]));
+	}
+	
+	private HashSet<Way> getWaysRecursive(ArrayList<String> a_ignore_relations) throws IOException, APIError, SAXException, ParserConfigurationException
 	{
 		a_ignore_relations.add(this.getDOM().getAttribute("id"));
 		downloadFull(this.getDOM().getAttribute("id"));
 
-		Vector<Way> ret = new Vector<Way>();
+		HashSet<Way> ret = new HashSet<Way>();
 		for(RelationMember it : getMembers())
 		{
 			String type = it.getDOM().getAttribute("type");
 			if(type.equals("way"))
-				ret.add(Way.fetch(it.getDOM().getAttribute("ref")));
+			{
+				if(!ret.add(Way.fetch(it.getDOM().getAttribute("ref"))))
+					System.out.println("Double");
+			}
 			else if(type.equals("relation") && !a_ignore_relations.contains(it.getDOM().getAttribute("ref")))
 				ret.addAll(Relation.fetch(it.getDOM().getAttribute("ref")).getWaysRecursive(a_ignore_relations));
 		}
 		return ret;
 	}
 	
+	/**
+	 * Returns an array of all ways that are contained in this relation and all of its sub-relations. You may want to call downloadRecursive() first.
+	 * @return
+	 * @throws IOException
+	 * @throws APIError
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 */
+	
 	public Way[] getWaysRecursive() throws IOException, APIError, SAXException, ParserConfigurationException
 	{
-		return getWaysRecursive(new Vector<String>()).toArray(new Way[0]);
+		return getWaysRecursive(new ArrayList<String>()).toArray(new Way[0]);
 	}
 	
 	/**
@@ -179,12 +264,12 @@ public class Relation extends de.cdauth.osm.basic.Object
 		
 		// Look which ways are connected
 		ArrayList<Integer> endsIndexes = new ArrayList<Integer>(); // Contains the indexes of all ways that are on one end of a segment (thus connected to more or less than 1 other way)
-		Vector<Integer>[] waysConnections1 = new Vector[ways.length];
-		Vector<Integer>[] waysConnections2 = new Vector[ways.length];
+		ArrayList<Integer>[] waysConnections1 = new ArrayList[ways.length];
+		ArrayList<Integer>[] waysConnections2 = new ArrayList[ways.length];
 		for(int i=0; i<ways.length; i++)
 		{
-			waysConnections1[i] = new Vector<Integer>();
-			waysConnections2[i] = new Vector<Integer>();
+			waysConnections1[i] = new ArrayList<Integer>();
+			waysConnections2[i] = new ArrayList<Integer>();
 		}
 		
 		for(int i=0; i<ways.length; i++)
@@ -219,7 +304,7 @@ public class Relation extends de.cdauth.osm.basic.Object
 		waysEnds1 = null;
 		waysEnds2 = null;
 		
-		Vector<Vector<Way>> segmentsWaysV = new Vector<Vector<Way>>();
+		ArrayList<ArrayList<Way>> segmentsWaysV = new ArrayList<ArrayList<Way>>();
 		
 		// Connect the ways and first create segments of ways (maybe later tags of the ways could be useful)
 		for(int i=0; i<endsIndexes.size(); i++)
@@ -229,10 +314,10 @@ public class Relation extends de.cdauth.osm.basic.Object
 			int it = endsIndexes.get(i);
 			int prevIt;
 
-			Vector<Way> segment = new Vector<Way>();
+			ArrayList<Way> segment = new ArrayList<Way>();
 			
 			segment.add(ways[it]);
-			Vector<Integer>[] connectionArray = (waysConnections1[it].size() != 1 ? waysConnections2 : waysConnections1);
+			ArrayList<Integer>[] connectionArray = (waysConnections1[it].size() != 1 ? waysConnections2 : waysConnections1);
 			while(connectionArray[it].size() == 1)
 			{
 				prevIt = it;
@@ -252,24 +337,36 @@ public class Relation extends de.cdauth.osm.basic.Object
 		waysConnections2 = null;
 		endsIndexes = null;
 		
-		Vector<Way>[] segmentsWays = segmentsWaysV.toArray(new Vector[0]);
+		ArrayList<Way>[] segmentsWays = segmentsWaysV.toArray(new ArrayList[0]);
 		
 		// Resolve segments into points
-		Vector<Vector<LonLat>> segmentsNodesV = new Vector<Vector<LonLat>>();
+		ArrayList<ArrayList<LonLat>> segmentsNodesV = new ArrayList<ArrayList<LonLat>>();
 		for(int i=0; i<segmentsWays.length; i++)
 		{
-			Vector<Way> segmentWays = segmentsWays[i];
-			Vector<LonLat> segmentNodes = new Vector<LonLat>();
+			ArrayList<Way> segmentWays = segmentsWays[i];
+			ArrayList<LonLat> segmentNodes = new ArrayList<LonLat>();
 			Node lastEndNode = null;
+			boolean lastWasRoundabout = false;
 			for(int j=0; j<segmentWays.size(); j++)
 			{
 				Node[] nodes = segmentWays.get(j).getMemberNodes();
-				if(lastEndNode == null && roundaboutReplacement.containsKey(nodes[0].getLonLat()))
-					segmentNodes.add(roundaboutReplacement.get(nodes[0].getLonLat()));
-				boolean reverse = (lastEndNode != null && nodes[nodes.length-1].equals(lastEndNode));
-				for(int k = (reverse ? nodes.length-1 : 0) + (lastEndNode == null ? 0 : (reverse ? -1 : 1)); (reverse) ? (k > 0) : (k < nodes.length); k += (reverse ? -1 : 1))
+				boolean reverse = false;
+				if(lastEndNode == null)
+				{
+					if(j+1 < segmentWays.size())
+					{
+						Node[] nextNodes = segmentWays.get(j+1).getMemberNodes();
+						reverse = (nodes[0].equals(nextNodes[0]) || nodes[0].equals(nextNodes[nextNodes.length-1]));
+					}
+					if(roundaboutReplacement.containsKey(nodes[0].getLonLat()))
+						segmentNodes.add(roundaboutReplacement.get(nodes[reverse ? nodes.length-1 : 0].getLonLat()));
+				}
+				else
+					reverse = (nodes[nodes.length-1].equals(lastEndNode) || (lastWasRoundabout && roundaboutReplacement.get(lastEndNode.getLonLat()).equals(roundaboutReplacement.get(nodes[nodes.length-1].getLonLat()))));
+				
+				for(int k = (reverse ? nodes.length-1 : 0) + (lastEndNode == null || lastWasRoundabout ? 0 : (reverse ? -1 : 1)); (reverse) ? (k >= 0) : (k < nodes.length); k += (reverse ? -1 : 1))
 					segmentNodes.add((lastEndNode = nodes[k]).getLonLat());
-				if(roundaboutReplacement.containsKey(lastEndNode.getLonLat()))
+				if(lastWasRoundabout = roundaboutReplacement.containsKey(lastEndNode.getLonLat()))
 					segmentNodes.add(roundaboutReplacement.get(lastEndNode.getLonLat()));
 			}
 			segmentsNodesV.add(segmentNodes);
@@ -283,7 +380,7 @@ public class Relation extends de.cdauth.osm.basic.Object
 		
 		// Sort segments
 		// Calculate the distance between all segment ends that aren’t connected to any other segment and find the greatest distance
-		Vector<LonLat> endsCoordinatesV = new Vector<LonLat>();
+		ArrayList<LonLat> endsCoordinatesV = new ArrayList<LonLat>();
 		
 		for(int i=0; i<segmentsNodes.length; i++)
 		{

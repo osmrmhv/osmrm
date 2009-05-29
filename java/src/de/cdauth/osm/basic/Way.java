@@ -19,6 +19,7 @@ package de.cdauth.osm.basic;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.TreeMap;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -26,7 +27,6 @@ import org.xml.sax.SAXException;
 
 public class Way extends de.cdauth.osm.basic.Object
 {
-	static public String TYPE = "way";
 	static private Hashtable<String,Way> sm_cache = new Hashtable<String,Way>();
 	
 	protected Way(Element a_dom)
@@ -42,6 +42,16 @@ public class Way extends de.cdauth.osm.basic.Object
 	public static Way fetch(String a_id) throws IOException, APIError, SAXException, ParserConfigurationException
 	{
 		return fetchWithCache(a_id, sm_cache, "way");
+	}
+	
+	public static TreeMap<Long,Way> getHistory(String a_id) throws IOException, SAXException, ParserConfigurationException, APIError
+	{
+		return fetchHistory(a_id, sm_cache, "way");
+	}
+	
+	public static Way fetch(String a_id, String a_version) throws IOException, APIError, SAXException, ParserConfigurationException
+	{
+		return fetchVersion(a_id, sm_cache, "way", a_version);
 	}
 	
 	protected static boolean isCached(String a_id)
