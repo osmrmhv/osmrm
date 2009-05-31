@@ -28,7 +28,7 @@
 			<dd><input type="text" name="id" id="i-lookup-id" /></dd>
 
 			<dt><label for="i-no-map"><?=htmlspecialchars(_("No map"))?></label></dt>
-			<dd><input type="checkbox" name="norender" id="i-no-map" checked="checked" /></dd>
+			<dd><input type="checkbox" name="norender" id="i-no-map" /></dd>
 		</dl>
 		<button type="submit"><?=htmlspecialchars(_("Lookup"))?></button>
 	</fieldset>
@@ -51,6 +51,7 @@
 				<tr>
 					<th>type</th>
 					<th>route</th>
+					<th>network</th>
 					<th>ref</th>
 					<th>name</th>
 					<th><?=htmlspecialchars(_("Lookup"))?></th>
@@ -66,9 +67,10 @@
 				<tr>
 					<td><?=htmlspecialchars($object->getTag("type"))?></td>
 					<td><?=htmlspecialchars($object->getTag("route"))?></td>
+					<td><?=htmlspecialchars($object->getTag("network"))?></td>
 					<td><?=htmlspecialchars($object->getTag("ref"))?></td>
 					<td><?=htmlspecialchars($object->getTag("name"))?></td>
-					<td><a href="relation.php?id=<?=htmlspecialchars(urlencode($object->getDOM()->getAttribute("id")))?>"><?=htmlspecialchars(_("Lookup"))?></a> (<a href="relation.php?id=<?=htmlspecialchars(urlencode($object->getDOM()->getAttribute("id"))."&norender=on")?>"><?=htmlspecialchars(_("No Map"))?></a>)</td>
+					<td><a href="relation.php?id=<?=htmlspecialchars(urlencode($object->getDOM()->getAttribute("id")))?>"><?=htmlspecialchars(_("Lookup"))?></a> (<a href="relation.php?id=<?=htmlspecialchars(urlencode($object->getDOM()->getAttribute("id"))."&norender=on")?>"><?=htmlspecialchars(_("No map"))?></a>)</td>
 				</tr>
 <?php
 			}

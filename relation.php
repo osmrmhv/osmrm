@@ -406,7 +406,7 @@
 		document.getElementById("personal-route-buttons").style.display = pr_stack.length > 0 ? "" : "none";
 
 		last = pr_stack.length > 0 ? pr_stack[pr_stack.length-1] : null;
-		for(var i=0; i<segments.length; i++)
+		for(var i=0; i<pr_allowed[0].length; i++)
 		{
 			var allowed,reversed;
 			if(last && i == last[0])
