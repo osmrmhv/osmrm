@@ -59,9 +59,38 @@
 -->
 	<head>
 		<title><?=htmlspecialchars($title)?></title>
+<?php
+			if($this->option("description"))
+			{
+?>
+		<meta name="description" content="<?=htmlspecialchars($this->option("description"))?>" />
+		<meta name="robots" content="index,nofollow" />
+<?php
+			}
+			else
+			{
+?>
+		<meta name="robots" content="noindex,nofollow" />
+<?php
+			}
+?>
 		<link rel="stylesheet" href="style.css" type="text/css" />
 		<script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
 		<script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
+<?php
+			$javascripts = $this->option("importJavaScript");
+			if($javascripts)
+			{
+				if(!is_array($javascripts))
+					$javascripts = array($javascripts);
+				foreach($javascripts as $javascript)
+				{
+?>
+		<script type="text/javascript" src="<?=htmlspecialchars($javascript)?>" /></script>
+<?php
+				}
+			}
+?>
 	</head>
 	<body<?=$this->option("bodyClass") ? " class=\"".htmlspecialchars($this->option("bodyClass"))."\"" : ""?>>
 		<h1><?=htmlspecialchars($title)?></h1>

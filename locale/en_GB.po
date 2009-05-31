@@ -222,7 +222,7 @@ msgstr "Relation ID"
 
 #: ../index.php:30
 msgid "Don’t show map"
-msgstr "Relation %s"
+msgstr "Don’t show map"
 
 #: ../index.php:33
 #: ../index.php:57
@@ -236,7 +236,7 @@ msgstr "Search for relations"
 
 #: ../index.php:73
 msgid "No map"
-msgstr "Relation %s"
+msgstr "No map"
 
 #: ../index.php:91
 msgid "Key"

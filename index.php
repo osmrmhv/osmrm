@@ -18,6 +18,9 @@
 
 	require_once("include.php");
 
+	if(count($_GET) == 0)
+		$GUI->option("description", _("OSM Route Manager is a debugging tool for Relations in OpenStreetMap."));
+	$GUI->option("importJavaScript", "sortable.js");
 	$GUI->head();
 ?>
 <form action="relation.php" method="get" id="lookup-form">
@@ -46,7 +49,7 @@
 			else
 				$results = OSMAPI::get("/relations/search?type=".urlencode($_GET["search-key"])."&value=".urlencode($_GET["search-value"]));
 ?>
-		<table class="result">
+		<table class="result sortable" id="resultTable">
 			<thead>
 				<tr>
 					<th>type</th>
@@ -54,7 +57,7 @@
 					<th>network</th>
 					<th>ref</th>
 					<th>name</th>
-					<th><?=htmlspecialchars(_("Lookup"))?></th>
+					<th class="unsortable"><?=htmlspecialchars(_("Lookup"))?></th>
 				</tr>
 			</thead>
 			<tbody>
