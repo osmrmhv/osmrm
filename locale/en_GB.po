@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSM Relation Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-31 13:28+0200\n"
+"POT-Creation-Date: 2009-05-31 13:34+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: \n"
@@ -221,8 +221,7 @@ msgid "Relation ID"
 msgstr "Relation ID"
 
 #: ../index.php:30
-#: ../index.php:73
-msgid "No map"
+msgid "Don’t show map"
 msgstr "Relation %s"
 
 #: ../index.php:33
@@ -234,6 +233,10 @@ msgstr "Lookup"
 #: ../index.php:38
 msgid "Search for relations"
 msgstr "Search for relations"
+
+#: ../index.php:73
+msgid "No map"
+msgstr "Relation %s"
 
 #: ../index.php:91
 msgid "Key"

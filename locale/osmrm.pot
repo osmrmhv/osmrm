@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-31 13:28+0200\n"
+"POT-Creation-Date: 2009-05-31 13:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -223,8 +223,8 @@ msgstr ""
 msgid "Relation ID"
 msgstr ""
 
-#: ../index.php:30 ../index.php:73
-msgid "No map"
+#: ../index.php:30
+msgid "Don’t show map"
 msgstr ""
 
 #: ../index.php:33 ../index.php:57 ../index.php:73
@@ -233,6 +233,10 @@ msgstr ""
 
 #: ../index.php:38
 msgid "Search for relations"
+msgstr ""
+
+#: ../index.php:73
+msgid "No map"
 msgstr ""
 
 #: ../index.php:91

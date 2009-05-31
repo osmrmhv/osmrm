@@ -27,7 +27,7 @@
 			<dt><label for="i-lookup-id"><?=htmlspecialchars(_("Relation ID"))?></label></dt>
 			<dd><input type="text" name="id" id="i-lookup-id" /></dd>
 
-			<dt><label for="i-no-map"><?=htmlspecialchars(_("No map"))?></label></dt>
+			<dt><label for="i-no-map"><?=htmlspecialchars(_("Don’t show map"))?></label></dt>
 			<dd><input type="checkbox" name="norender" id="i-no-map" /></dd>
 		</dl>
 		<button type="submit"><?=htmlspecialchars(_("Lookup"))?></button>
