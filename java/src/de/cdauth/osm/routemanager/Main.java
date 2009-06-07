@@ -49,10 +49,6 @@ public class Main
 		token_cache.setRequired(true);
 		arguments.addArgument(token_cache);
 		
-		Argument token_quiet = new Argument('q', "quiet");
-		token_quiet.setDescription("Only print errors.");
-		arguments.addArgument(token_quiet);
-		
 		arguments.parseArguments(a_args);
 		
 		System.out.println("This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.");

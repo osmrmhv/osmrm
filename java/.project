@@ -3,6 +3,7 @@
 	<name>OSM Route Manager</name>
 	<comment></comment>
 	<projects>
+		<project>bwproxy</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
