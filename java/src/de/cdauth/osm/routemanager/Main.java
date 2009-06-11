@@ -35,6 +35,8 @@ public class Main
 
 	public static void main(String[] a_args) throws ArgumentParserException, ClassNotFoundException, SQLException, IOException, APIError, SAXException, ParserConfigurationException
 	{
+		API.setUserAgent("OSM Route Manager");
+
 		ArgumentParser arguments = new ArgumentParser("OSM Route Manager");
 		
 		Argument token_relation = new Argument('r', "relation");

@@ -24,6 +24,17 @@
 	$render = !isset($_GET["norender"]);
 	if(!$render)
 		$GUI->option("bodyClass", "norender");
+	else
+	{
+		$GUI->option("importJavaScript", array(
+			"http://www.openlayers.org/dev/OpenLayers.js",
+			"http://www.openstreetmap.org/openlayers/OpenStreetMap.js",
+			"http://opentiles.com/nop/opentiles.js",
+			"http://maps.google.com/maps?file=api&v=2&key=ABQIAAAApZR0PIISH23foUX8nxj4LxT_x5xGo0Rzkn1YRNpahJvSZYku9hTJeTmkeyXv4TuaU5kM077xJUUM7w",
+			"http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=cdauths-map",
+			"http://osm.cdauth.de/map/prototypes.js"
+		));
+	}
 
 	$GUI->head();
 
@@ -111,7 +122,7 @@
 ?>
 	<dt><?=htmlspecialchars($tag->getAttribute("k"))?></dt>
 <?php
-		if(preg_match("/^url(:?)/i", $tag->getAttribute("k")))
+		if(preg_match("/^url(:|\$)/i", $tag->getAttribute("k")))
 		{
 			$v = explode(";", $tag->getAttribute("v"));
 			foreach($v as $k=>$v1)
@@ -246,29 +257,11 @@
 	if($render)
 	{
 ?>
-	var map = new OpenLayers.Map ("map", {
-		controls:[
-			new OpenLayers.Control.Navigation(),
-			new OpenLayers.Control.PanZoomBar(),
-			new OpenLayers.Control.LayerSwitcher(),
-			new OpenLayers.Control.Attribution()],
-		maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
-		maxResolution: 156543.0399,
-		numZoomLevels: 19,
-		units: 'm',
-		projection: new OpenLayers.Projection("EPSG:900913"),
-		displayProjection: new OpenLayers.Projection("EPSG:4326")
-	} );
+	var map = new OpenLayers.Map.cdauth("map");
+	map.addAllAvailableLayers();
 
 	window.onresize = function(){ document.getElementById("map").style.height = Math.round(window.innerHeight*.8)+"px"; map.updateSize(); }
 	window.onresize();
-
-	layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
-	map.addLayer(layerMapnik);
-	layerTilesAtHome = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
-	map.addLayer(layerTilesAtHome);
-	layerCycleMap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");
-	map.addLayer(layerCycleMap);
 
 	var styleMapNormal = new OpenLayers.StyleMap({strokeColor: "#0000ff", strokeWidth: 3, strokeOpacity: 0.5});
 	var styleMapHighlight = new OpenLayers.StyleMap({strokeColor: "#ff0080", strokeWidth: 3, strokeOpacity: 0.5});
@@ -295,8 +288,10 @@
 		}
 ?>
 	map.addLayers(segments);
-	layerMarkers = new OpenLayers.Layer.Markers("Markers", { displayInLayerSwitcher: false });
+
+	var layerMarkers = new OpenLayers.Layer.cdauth.markers.LonLat("Markers");
 	map.addLayer(layerMarkers);
+	layerMarkers.addClickControl()
 
 	var extent;
 	if(segments.length > 0)
@@ -309,45 +304,6 @@
 		map.zoomToExtent(extent);
 	else
 		map.zoomToMaxExtent();
-
-	OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
-		defaultHandlerOptions: {
-			'single': true,
-			'double': false,
-			'pixelTolerance': 0,
-			'stopSingle': false,
-			'stopDouble': false
-		},
-
-		initialize: function(options) {
-			this.handlerOptions = OpenLayers.Util.extend(
-				{}, this.defaultHandlerOptions
-			);
-			OpenLayers.Control.prototype.initialize.apply(
-				this, arguments
-			);
-			this.handler = new OpenLayers.Handler.Click(
-				this, {
-					'click': this.trigger
-				}, this.handlerOptions
-			);
-		},
-
-		trigger: function(e) {
-			var lonlat = map.getLonLatFromViewPortPx(e.xy);
-			lonlat_readable = lonlat.clone().transform(map.getProjectionObject(), projection);
-			var icon = new OpenLayers.Icon('http://www.openstreetmap.org/openlayers/img/marker.png', new OpenLayers.Size(21,25), new OpenLayers.Pixel(-9, -25));
-			var marker = new OpenLayers.Marker(lonlat,icon);
-			layerMarkers.addMarker(marker);
-			var framecloud = new OpenLayers.Popup.FramedCloud("lonlat", lonlat, null, "<dl><dt><?=htmlspecialchars(_("Longitude"))?></dt><dd>"+Math.round(lonlat_readable.lon*100000000)/100000000+"</dd><dt><?=htmlspecialchars(_("Latitude"))?></dt><dd>"+Math.round(lonlat_readable.lat*100000000)/100000000+"</dd></dl><ul><li><a href=\"http://www.openstreetmap.org/?lat="+lonlat_readable.lat+"&amp;lon="+lonlat_readable.lon+"&amp;zoom="+map.getZoom()+"\"><?=htmlspecialchars(_("OpenStreetMap Permalink"))?></a></li><li><a href=\"http://www.openstreetmap.org/?mlat="+lonlat_readable.lat+"&amp;mlon="+lonlat_readable.lon+"&amp;zoom="+map.getZoom()+"\"><?=htmlspecialchars(_("OpenStreetMap Marker"))?></a></li><li><a href=\"http://maps.google.com/?q="+lonlat_readable.lat+","+lonlat_readable.lon+"\"><?=htmlspecialchars(_("Google Maps Marker"))?></a></li><li><a href=\"http://maps.yahoo.com/broadband/#lat="+lonlat_readable.lat+"&amp;lon="+lonlat_readable.lon+"&amp;zoom="+map.getZoom()+"\"><?=htmlspecialchars(_("Yahoo Maps Permalink"))?></a></li></ul>", icon, true, function(){layerMarkers.removeMarker(marker); framecloud.destroy(); });
-			map.addPopup(framecloud);
-		}
-	});
-
-	var click = new OpenLayers.Control.Click();
-	map.addControl(click);
-	click.activate();
-
 <?php
 	}
 

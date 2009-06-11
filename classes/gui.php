@@ -75,8 +75,6 @@
 			}
 ?>
 		<link rel="stylesheet" href="style.css" type="text/css" />
-		<script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
-		<script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
 <?php
 			$javascripts = $this->option("importJavaScript");
 			if($javascripts)
@@ -120,7 +118,7 @@
 ?>
 		<hr />
 		<p>All geographic data by <a href="http://www.openstreetmap.org/">OpenStreetMap</a>, available under <a href="http://creativecommons.org/licenses/by-sa/2.0/">cc-by-sa-2.0</a>.</p>
-		<p>OSM Route Manager is free software: you can redistribute it and/or modify it under the terms of the <a href="http://www.gnu.org/licenses/agpl.html">GNU Affero General Public License</a> as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. Get the source code via <a href="svn://cdauth.de/tools/osm-route-manager/">SVN</a>/<a href="http://svn.cdauth.de/viewvc.cgi/Tools/osm-route-manager/">WebSVN</a>.</p>
+		<p>OSM Route Manager is free software: you can redistribute it and/or modify it under the terms of the <a href="http://www.gnu.org/licenses/agpl.html">GNU Affero General Public License</a> as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. Get the source code via <a href="svn://cdauth.de/tools/osm/route-manager/">SVN</a>/<a href="http://svn.cdauth.de/viewvc.cgi/Tools/osm/route-manager/">WebSVN</a>.</p>
 	</body>
 </html>
 <?php

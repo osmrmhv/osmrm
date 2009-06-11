@@ -76,31 +76,52 @@
 		static function segmentate($this_id, $force_update=false)
 		{
 			$sql = SQLite::getConnection();
-			$sql->query("CREATE TABLE IF NOT EXISTS relation_updated ( relation INT, updated INT, timestamp TEXT );");
-			$sql->query("CREATE TABLE IF NOT EXISTS relation_segments ( relation INT, segment INT, i INT, lat REAL, lon REAL );");
+			/*$sql->query("CREATE TABLE IF NOT EXISTS relation_updated ( relation INT, updated INT, timestamp TEXT );");
+			$sql->query("CREATE TABLE IF NOT EXISTS relation_segments ( relation INT, segment INT, i INT, lat REAL, lon REAL );");*/
 
 			if(!$force_update)
 			{
-				$update = $sql->query("SELECT updated,timestamp FROM relation_updated WHERE relation = ".$sql->quote($this_id)." LIMIT 1;")->fetch(PDO::FETCH_ASSOC);
-				if($update && time()-$update["updated"] < 86400)
+				try
 				{
-					$relation = OSMObject::fetch("relation", $this_id);
-					if($relation->getDOM()->getAttribute("timestamp") == $update["timestamp"])
+					$force_update = true;
+					$update = $sql->query("SELECT updated,timestamp FROM relation_updated WHERE relation = ".$sql->quote($this_id)." LIMIT 1;")->fetch(PDO::FETCH_ASSOC);
+					if($update && time()-$update["updated"] < 86400)
 					{
-						$return = array();
-						$query = $sql->query("SELECT segment, i, lat, lon FROM relation_segments WHERE relation = ".$sql->quote($this_id)." ORDER BY segment ASC, i ASC;");
-						while($row = $query->fetch(PDO::FETCH_ASSOC))
-						{
-							if(!isset($return[$row["segment"]]))
-								$return[$row["segment"]] = array();
-							$return[$row["segment"]][$row["i"]] = array($row["lat"], $row["lon"]);
-						}
-						return array($update["updated"], $return);
+						$relation = OSMObject::fetch("relation", $this_id);
+						if($relation->getDOM()->getAttribute("timestamp") == $update["timestamp"])
+							$force_update = false;
 					}
+				}
+				catch(PDOException $e)
+				{
 				}
 			}
 
-			$last_update = time();
+
+			if($force_update)
+				exec("java/osmrm --relation=".escapeshellarg($this_id)." --cache=cache.sqlite3");
+
+			try
+			{
+				$update = $sql->query("SELECT updated,timestamp FROM relation_updated WHERE relation = ".$sql->quote($this_id)." LIMIT 1;")->fetch(PDO::FETCH_ASSOC);
+				if(!$update)
+					return null;
+				$return = array();
+				$query = $sql->query("SELECT segment, i, lat, lon FROM relation_segments WHERE relation = ".$sql->quote($this_id)." ORDER BY segment ASC, i ASC;");
+				while($row = $query->fetch(PDO::FETCH_ASSOC))
+				{
+					if(!isset($return[$row["segment"]]))
+						$return[$row["segment"]] = array();
+					$return[$row["segment"]][$row["i"]] = array($row["lat"], $row["lon"]);
+				}
+				return array($update["updated"], $return);
+			}
+			catch(PDOException $e)
+			{
+				return null;
+			}
+
+			/*$last_update = time();
 
 			self::downloadRecursive($this_id);
 			$relation = OSMObject::fetch("relation", $this_id);
@@ -297,7 +318,7 @@
 			}
 			$sql->commit();
 
-			return array($last_update, $segments_nodes);
+			return array($last_update, $segments_nodes);*/
 		}
 
 		private static function sortSegmentsCallback($a, $b)
