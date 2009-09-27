@@ -131,6 +131,16 @@
 	<dd><?=implode(";", $v)?></dd>
 <?php
 		}
+		elseif(preg_match("/^wiki(:.*)?\$/i", $tag->getAttribute("k"), $m))
+		{
+			$m[1] = strtolower($m[1]);
+			$v = explode(";", $tag->getAttribute("v"));
+			foreach($v as $k=>$v1)
+				$v[$k] = "<a href=\"http://wiki.openstreetmap.org/wiki/".htmlspecialchars(rawurlencode(($m[1] == ":symbol" ? "Image:" : "").$v1))."\">".htmlspecialchars($v1)."</a>";
+?>
+	<dd><?=implode(";", $v)?></dd>
+<?php
+		}
 		else
 		{
 ?>
