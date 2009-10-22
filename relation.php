@@ -301,7 +301,9 @@
 
 	var layerMarkers = new OpenLayers.Layer.cdauth.markers.LonLat("Markers");
 	map.addLayer(layerMarkers);
-	layerMarkers.addClickControl()
+	var clickControl = new OpenLayers.Control.cdauth.CreateMarker(layerMarkers);
+	map.addControl(clickControl);
+	clickControl.activate();
 
 	var extent;
 	if(segments.length > 0)
