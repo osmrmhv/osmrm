@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSM Route Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-31 13:34+0200\n"
+"POT-Creation-Date: 2009-11-02 21:08+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: \n"
@@ -19,128 +19,104 @@ msgstr ""
 msgid "Relation %s"
 msgstr "Relation %s"
 
-#: ../relation.php:98
+#: ../relation.php:107
 msgid "Back to home page"
 msgstr "Zur Startseite"
 
-#: ../relation.php:99
+#: ../relation.php:108
 msgid "Open this in OSM Relation Analyzer"
 msgstr "Im OSM Relation Analyzer öffnen"
 
-#: ../relation.php:100
+#: ../relation.php:109
 msgid "Browse on OpenStreetMap"
 msgstr "Details auf OpenStreetMap nachschauen"
 
-#: ../relation.php:102
+#: ../relation.php:111
 msgid "Note that many features of this page will not work without JavaScript."
 msgstr "Die Funktionalität dieser Seite ist ohne JavaScript stark eingeschränkt."
 
-#: ../relation.php:103
+#: ../relation.php:112
 #, php-format
 msgid "The data was last refreshed on %s. The timestamp of the relation is %s. If you think one of the members might have been changed, %sreload the data manually%s."
 msgstr "Die Daten wurden zuletzt am %s vom OSM-Server heruntergeladen. Das Änderungsdatum der Relation ist %s. Einzelne Wege oder Subrelationen könnten sich geändert haben, in diesem Fall %smanuell neuladen%s."
 
-#: ../relation.php:104
+#: ../relation.php:113
 msgid "Tags"
 msgstr "Tags"
 
-#: ../relation.php:132
+#: ../relation.php:151
 msgid "Details"
 msgstr "Details"
 
-#: ../relation.php:134
+#: ../relation.php:153
 msgid "Last changed"
 msgstr "Zuletzt geändert"
 
-#: ../relation.php:135
+#: ../relation.php:154
 #, php-format
 msgid "%s by %s"
 msgstr "%s von %s"
 
-#: ../relation.php:137
+#: ../relation.php:156
 msgid "Total length"
 msgstr "Gesamtlänge"
 
-#: ../relation.php:140
+#: ../relation.php:159
 msgid "Sub-relations"
 msgstr "Sub-Relationen"
 
-#: ../relation.php:161
+#: ../relation.php:180
 msgid "Parent relations"
 msgstr "Super-Relationen"
 
-#: ../relation.php:175
+#: ../relation.php:194
 msgid "Segments"
 msgstr "Abschnitte"
 
-#: ../relation.php:180
+#: ../relation.php:199
 msgid "Get GPS coordinates by clicking on the map."
 msgstr "GPS-Koordinaten lassen sich durch Klick auf die Karte feststellen."
 
-#: ../relation.php:188
+#: ../relation.php:207
 msgid "Segment #"
 msgstr "Abschnitts-Nr. "
 
-#: ../relation.php:189
+#: ../relation.php:208
 msgid "Length"
 msgstr "Länge"
 
-#: ../relation.php:190
+#: ../relation.php:209
 msgid "Distance to next segments"
 msgstr "Entfernung zum nächsten Abschnitt"
 
-#: ../relation.php:195
+#: ../relation.php:214
 msgid "Visible"
 msgstr "Anzeigen"
 
-#: ../relation.php:196
-#: ../relation.php:217
+#: ../relation.php:215
+#: ../relation.php:236
 msgid "Zoom"
 msgstr "Vergrößern"
 
-#: ../relation.php:200
+#: ../relation.php:219
 msgid "Add to personal route"
 msgstr "Zur persönlichen Route hinzufügen"
 
-#: ../relation.php:228
+#: ../relation.php:247
 msgid "Personal route"
 msgstr "Persönliche Route"
 
-#: ../relation.php:232
+#: ../relation.php:251
 msgid "Download GPX"
 msgstr "GPX herunterladen"
 
-#: ../relation.php:287
-#: ../relation.php:374
+#: ../relation.php:288
+#: ../relation.php:340
 #, php-format
 msgid "Segment %s"
 msgstr "Abschnitt %s"
 
-#: ../relation.php:342
-msgid "Longitude"
-msgstr "Östl. Länge"
-
-#: ../relation.php:342
-msgid "Latitude"
-msgstr "Nördl. Breite"
-
-#: ../relation.php:342
-msgid "OpenStreetMap Permalink"
-msgstr "OpenStreetMap-Permalink"
-
-#: ../relation.php:342
-msgid "OpenStreetMap Marker"
-msgstr "OpenStreetMap-Marker"
-
-#: ../relation.php:342
-msgid "Google Maps Marker"
-msgstr "Google-Maps-Marker"
-
-#: ../relation.php:342
-msgid "Yahoo Maps Permalink"
-msgstr "Yahoo-Maps-Permalink"
-
-#: ../relation.php:374
+#: ../relation.php:340
 #, php-format
 msgid "Segment %s (reversed)"
 msgstr "Segment %s (Rückweg)"
@@ -212,49 +188,73 @@ msgstr "OSM-Routen-Manager"
 msgid "OSM Route Manager: %s"
 msgstr "OSM-Routen-Manager: %s"
 
-#: ../index.php:25
+#: ../index.php:22
+msgid "OSM Route Manager is a debugging tool for Relations in OpenStreetMap."
+msgstr "Der OSM Route Manager ist ein Debug-Werkzeug für Relationen in OpenStreetMap."
+
+#: ../index.php:28
 msgid "Lookup relation by ID"
 msgstr "Relation-ID eingeben"
 
-#: ../index.php:27
+#: ../index.php:30
 msgid "Relation ID"
 msgstr "Relation-ID"
 
-#: ../index.php:30
+#: ../index.php:33
 msgid "Don’t show map"
 msgstr "Karte nicht anzeigen"
 
-#: ../index.php:33
-#: ../index.php:57
-#: ../index.php:73
+#: ../index.php:36
 msgid "Lookup"
 msgstr "Analysieren"
 
-#: ../index.php:38
+#: ../index.php:41
 msgid "Search for relations"
 msgstr "Relationen suchen"
 
-#: ../index.php:73
+#: ../index.php:55
+msgid "ID"
+msgstr "ID"
+
+#: ../index.php:61
+#: ../index.php:78
+msgid "Open"
+msgstr "Öffnen"
+
+#: ../index.php:78
 msgid "No map"
 msgstr "Ohne Karte"
 
-#: ../index.php:91
+#: ../index.php:96
 msgid "Key"
 msgstr "Schlüssel"
 
-#: ../index.php:98
+#: ../index.php:103
 msgid "Value"
 msgstr "Wert"
 
-#: ../index.php:101
+#: ../index.php:106
 msgid "Search using OSM API"
 msgstr "Mit der OSM-API suchen"
 
-#: ../index.php:102
+#: ../index.php:107
 msgid "Search using XAPI"
 msgstr "Mit der XAPI suchen"
 
-#: ../index.php:103
+#: ../index.php:108
 msgid "OSM API will probably be more current and a lot faster but won’t let you use wildcards."
 msgstr "Die OSM-API ist normalerweise aktueller und deutlich schneller, aber man kann keine Wildcards verwenden."
+
+#~ msgid "Longitude"
+#~ msgstr "Östl. Länge"
+#~ msgid "Latitude"
+#~ msgstr "Nördl. Breite"
+#~ msgid "OpenStreetMap Permalink"
+#~ msgstr "OpenStreetMap-Permalink"
+#~ msgid "OpenStreetMap Marker"
+#~ msgstr "OpenStreetMap-Marker"
+#~ msgid "Google Maps Marker"
+#~ msgstr "Google-Maps-Marker"
+#~ msgid "Yahoo Maps Permalink"
+#~ msgstr "Yahoo-Maps-Permalink"
 

@@ -58,7 +58,7 @@
 					<th>network</th>
 					<th>ref</th>
 					<th>name</th>
-					<th class="unsortable"><?=htmlspecialchars(_("Lookup"))?></th>
+					<th class="unsortable"><?=htmlspecialchars(_("Open"))?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -75,7 +75,7 @@
 					<td><?=htmlspecialchars($object->getTag("network"))?></td>
 					<td><?=htmlspecialchars($object->getTag("ref"))?></td>
 					<td><?=htmlspecialchars($object->getTag("name"))?></td>
-					<td><a href="relation.php?id=<?=htmlspecialchars(urlencode($object->getDOM()->getAttribute("id")))?>"><?=htmlspecialchars(_("Lookup"))?></a> (<a href="relation.php?id=<?=htmlspecialchars(urlencode($object->getDOM()->getAttribute("id"))."&norender=on")?>"><?=htmlspecialchars(_("No map"))?></a>)</td>
+					<td><a href="relation.php?id=<?=htmlspecialchars(urlencode($object->getDOM()->getAttribute("id")))?>"><?=htmlspecialchars(_("Open"))?></a> (<a href="relation.php?id=<?=htmlspecialchars(urlencode($object->getDOM()->getAttribute("id"))."&norender=on")?>"><?=htmlspecialchars(_("No map"))?></a>)</td>
 				</tr>
 <?php
 			}
