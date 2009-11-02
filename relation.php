@@ -27,9 +27,7 @@
 	else
 	{
 		$GUI->option("importJavaScript", array(
-			"http://www.openlayers.org/dev/OpenLayers.js",
-			"http://www.openstreetmap.org/openlayers/OpenStreetMap.js",
-			"http://opentiles.com/nop/opentiles.js",
+			"http://www.openlayers.org/api/OpenLayers.js",
 			"http://maps.google.com/maps?file=api&v=2&key=ABQIAAAApZR0PIISH23foUX8nxj4LxT_x5xGo0Rzkn1YRNpahJvSZYku9hTJeTmkeyXv4TuaU5kM077xJUUM7w",
 			"http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=cdauths-map",
 			"http://osm.cdauth.de/map/prototypes.js"
