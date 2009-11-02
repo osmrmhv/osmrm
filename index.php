@@ -52,6 +52,7 @@
 		<table class="result sortable" id="resultTable">
 			<thead>
 				<tr>
+					<th><?=htmlspecialchars(_("ID"))?></th>
 					<th>type</th>
 					<th>route</th>
 					<th>network</th>
@@ -68,6 +69,7 @@
 					continue;
 ?>
 				<tr>
+					<td><?=htmlspecialchars($object->getDOM()->getAttribute("id"))?></td>
 					<td><?=htmlspecialchars($object->getTag("type"))?></td>
 					<td><?=htmlspecialchars($object->getTag("route"))?></td>
 					<td><?=htmlspecialchars($object->getTag("network"))?></td>
