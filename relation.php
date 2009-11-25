@@ -30,7 +30,8 @@
 			"http://www.openlayers.org/api/OpenLayers.js",
 			"http://maps.google.com/maps?file=api&v=2&key=ABQIAAAApZR0PIISH23foUX8nxj4LxT_x5xGo0Rzkn1YRNpahJvSZYku9hTJeTmkeyXv4TuaU5kM077xJUUM7w",
 			"http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=cdauths-map",
-			"http://osm.cdauth.de/map/prototypes.js"
+			"http://osm.cdauth.de/map/prototypes.js",
+			"http://osm.cdauth.de/map/openstreetbugs.js"
 		));
 	}
 
@@ -268,6 +269,8 @@
 	var map = new OpenLayers.Map.cdauth("map");
 	map.addAllAvailableLayers();
 
+	map.addLayer(new OpenLayers.Layer.OpenStreetBugs("OpenStreetBugs", { shortName: "osb" }));
+
 	window.onresize = function(){ document.getElementById("map").style.height = Math.round(window.innerHeight*.8)+"px"; map.updateSize(); }
 	window.onresize();
 
@@ -297,7 +300,7 @@
 ?>
 	map.addLayers(segments);
 
-	var layerMarkers = new OpenLayers.Layer.cdauth.markers.LonLat("Markers");
+	var layerMarkers = new OpenLayers.Layer.cdauth.Markers.LonLat("Markers", { shortName : "m" });
 	map.addLayer(layerMarkers);
 	var clickControl = new OpenLayers.Control.cdauth.CreateMarker(layerMarkers);
 	map.addControl(clickControl);
@@ -314,6 +317,11 @@
 		map.zoomToExtent(extent);
 	else
 		map.zoomToMaxExtent();
+
+	var hashHandler = OpenLayers.Control.URLHashHandler();
+	map.addControl(hashHandler);
+	hashHandler.activate();
+
 <?php
 	}
 
