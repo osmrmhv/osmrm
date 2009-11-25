@@ -318,7 +318,7 @@
 	else
 		map.zoomToMaxExtent();
 
-	var hashHandler = OpenLayers.Control.cdauth.URLHashHandler();
+	var hashHandler = new OpenLayers.Control.cdauth.URLHashHandler();
 	map.addControl(hashHandler);
 	hashHandler.activate();
 
