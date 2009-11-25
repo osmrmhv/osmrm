@@ -460,7 +460,8 @@
 			segments_highlighted[i] = new OpenLayers.Layer.PointTrack(segments[i].name, {
 				styleMap: styleMapHighlight,
 				projection: new OpenLayers.Projection("EPSG:4326"),
-				displayInLayerSwitcher: false
+				displayInLayerSwitcher: false,
+				ignorePermalink: true
 			});
 			segments_highlighted[i].addNodes(segments_data[i]);
 			segments_highlighted[i].setZIndex(100000);
