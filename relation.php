@@ -461,7 +461,7 @@
 				styleMap: styleMapHighlight,
 				projection: new OpenLayers.Projection("EPSG:4326"),
 				displayInLayerSwitcher: false,
-				ignorePermalink: true
+				noPermalink: true
 			});
 			segments_highlighted[i].addNodes(segments_data[i]);
 			segments_highlighted[i].setZIndex(100000);
