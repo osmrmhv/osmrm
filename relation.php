@@ -269,7 +269,7 @@
 	var map = new OpenLayers.Map.cdauth("map");
 	map.addAllAvailableLayers();
 
-	map.addLayer(new OpenLayers.Layer.OpenStreetBugs("OpenStreetBugs", { shortName: "osb" }));
+	map.addLayer(new OpenLayers.Layer.OpenStreetBugs("OpenStreetBugs", { visibility: false, shortName: "osb" }));
 
 	window.onresize = function(){ document.getElementById("map").style.height = Math.round(window.innerHeight*.8)+"px"; map.updateSize(); }
 	window.onresize();
@@ -318,7 +318,7 @@
 	else
 		map.zoomToMaxExtent();
 
-	var hashHandler = OpenLayers.Control.URLHashHandler();
+	var hashHandler = OpenLayers.Control.cdauth.URLHashHandler();
 	map.addControl(hashHandler);
 	hashHandler.activate();
 
