@@ -498,6 +498,7 @@
 			}
 			else if(!document.getElementById("select-segment-"+i).checked)
 			{
+				segments[i].cdauthDefaultVisibility = true;
 				segments[i].setVisibility(false);
 				if(segments_highlighted[i])
 					segments_highlighted[i].setVisibility(false);
