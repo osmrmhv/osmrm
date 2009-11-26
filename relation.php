@@ -319,11 +319,14 @@
 		map.zoomToMaxExtent();
 
 	var hashHandler = new OpenLayers.Control.cdauth.URLHashHandler();
+	hashHandler.updateMapView = function() {
+		var ret = OpenLayers.Control.cdauth.URLHashHandler.prototype.updateMapView.apply(this, arguments);
+		for(var i=0; i<segments.length; i++)
+			document.getElementById("select-segment-"+i).checked = segments[i].getVisibility();
+		return ret;
+	};
 	map.addControl(hashHandler);
 	hashHandler.activate();
-
-	for(var i=0; i<segments.length; i++)
-		document.getElementById("select-segment-"+i).checked = segments[i].getVisibility();
 
 <?php
 	}
