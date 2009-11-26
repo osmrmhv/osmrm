@@ -322,6 +322,9 @@
 	map.addControl(hashHandler);
 	hashHandler.activate();
 
+	for(var i=0; i<segments.length; i++)
+		document.getElementById("select-segment-"+i).checked = segments[i].getVisibility();
+
 <?php
 	}
 
