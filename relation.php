@@ -461,13 +461,14 @@
 				styleMap: styleMapHighlight,
 				projection: new OpenLayers.Projection("EPSG:4326"),
 				displayInLayerSwitcher: false,
-				noPermalink: true
+				shortName: null
 			});
 			segments_highlighted[i].addNodes(segments_data[i]);
 			segments_highlighted[i].setZIndex(100000);
 			map.addLayer(segments_highlighted[i]);
 		}
 
+		segments[i].cdauthDefaultVisibility = false;
 		segments[i].setVisibility(false);
 		segments_highlighted[i].setVisibility(true);
 		document.getElementById("tr-segment-"+i).className = "tr-segment-highlight";
@@ -481,6 +482,7 @@
 		if(!segments_highlighted[i] || !segments_highlighted[i].getVisibility())
 			return;
 		segments_highlighted[i].setVisibility(false);
+		segments[i].cdauthDefaultVisibility = true;
 		segments[i].setVisibility(true);
 	}
 
