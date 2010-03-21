@@ -99,7 +99,7 @@
 
 
 			if($force_update)
-				exec("java/osmrm --relation=".escapeshellarg($this_id)." --cache=cache.sqlite3");
+				exec("java/osmrm.sh --relation=".escapeshellarg($this_id)." --cache=cache.sqlite3");
 
 			try
 			{
