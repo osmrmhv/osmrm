@@ -28,7 +28,7 @@
 	{
 		$GUI->option("importJavaScript", array(
 			"http://www.openlayers.org/api/OpenLayers.js",
-			"http://maps.google.com/maps?file=api&v=2&key=ABQIAAAApZR0PIISH23foUX8nxj4LxT_x5xGo0Rzkn1YRNpahJvSZYku9hTJeTmkeyXv4TuaU5kM077xJUUM7w",
+			"http://maps.google.com/maps?file=api&v=2&key=ABQIAAAApZR0PIISH23foUX8nxj4LxQe8fls808ouw55mfsb9VLPMfxZSBRAxMJl1CWns7WN__O20IuUSiDKng",
 			"http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=cdauths-map",
 			"http://osm.cdauth.de/map/prototypes.js",
 			"http://osm.cdauth.de/map/openstreetbugs.js"
